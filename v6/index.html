@@ -1,152 +1,5 @@
 <!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Gestión parroquial · Panel (v6, prototipo)</title>
-<style>
-:root{--bg:#faf8f4;--pn:#fffdf9;--sb:#f3f0ea;--ink:#1b1a17;--t2:#55514a;--t3:#6b665d;--ln:#e3ded4;--ln2:#d3cdc1;--ac:#7a2531;--acs:#f4e9ea;--ok:#2f5d3a;--oks:#e8efe6;--wa:#7a5a12;--was:#f5eedb;--serif:Georgia,"Times New Roman",serif;--sans:"Helvetica Neue",Helvetica,Arial,sans-serif}
-html{font-size:17px}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:1rem/1.5 var(--sans)}
-button,input,select{font:inherit;color:inherit}a{color:inherit}
-:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
-svg.i{width:1.05em;height:1.05em;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex:none}
-.btn{display:inline-flex;align-items:center;gap:.45rem;border:1px solid var(--ln2);background:var(--pn);border-radius:6px;padding:.42rem .8rem;cursor:pointer;white-space:nowrap;font-size:.92rem;font-weight:500}
-.btn:hover{border-color:var(--t3)}.btn.p{background:var(--ink);color:#fff;border-color:var(--ink)}.btn.p:hover{background:#333}
-.btn.g{border-color:transparent;background:none}.btn.g:hover{background:var(--sb)}.btn.d{color:var(--ac)}
-/* login */
-#login{min-height:100vh;display:grid;place-items:center}
-.lg{width:25rem;border:1px solid var(--ln);background:var(--pn);border-radius:10px;padding:2.2rem}
-.lg h1{font:400 1.7rem var(--serif);margin:.2rem 0 .3rem}.lg p{color:var(--t2);margin:0 0 1.4rem}
-.fld{display:block;margin-bottom:1rem}.fld span{display:block;font-size:.88rem;font-weight:600;margin-bottom:.3rem}
-.fld input,.fld select,.fld textarea{width:100%;border:1px solid var(--ln2);background:#fff;border-radius:6px;padding:.55rem .7rem}
-.lg .btn.p{width:100%;justify-content:center;padding:.65rem}.lgf{margin-top:1.4rem;font-size:.82rem;color:var(--t3);text-align:center}
-/* shell */
-#app{display:none}#app.on{display:block}
-aside{position:fixed;inset:0 auto 0 0;width:240px;background:var(--sb);border-right:1px solid var(--ln);display:flex;flex-direction:column;padding:.9rem .7rem;overflow:auto}
-.ps{display:flex;align-items:center;gap:.6rem;border:1px solid var(--ln2);background:var(--pn);border-radius:7px;padding:.5rem .6rem;cursor:pointer;margin-bottom:1rem;text-align:left;width:100%}
-.ps .m{width:1.9rem;height:1.9rem;border-radius:5px;background:var(--ink);color:#fff;display:grid;place-items:center;font:1rem var(--serif)}
-.ps b{display:block;font-size:.9rem;line-height:1.2}.ps small{display:block;white-space:nowrap;color:var(--t3);font-size:.76rem;line-height:1.3}
-.grp{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);font-weight:600;margin:1rem .55rem .3rem}
-nav a{display:flex;align-items:center;gap:.6rem;padding:.38rem .55rem;border-radius:6px;text-decoration:none;font-size:.93rem;color:var(--t2);cursor:pointer}
-nav a:hover{background:#ebe7df;color:var(--ink)}nav a.on{background:var(--pn);color:var(--ink);font-weight:600;box-shadow:inset 0 0 0 1px var(--ln)}
-nav a .n{margin-left:auto;font-size:.75rem;color:var(--t3);font-weight:500}nav a.on svg{color:var(--ac)}
-.sbf{margin-top:auto;font-size:.76rem;color:var(--t3);padding:.6rem .55rem 0;border-top:1px solid var(--ln)}
-.main{margin-left:240px;min-height:100vh}
-header{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--ln);height:3.4rem;display:flex;align-items:center;gap:.6rem;padding:0 max(1.6rem,calc((100% - 1200px)/2 + 1.6rem))}.mb{display:none}
-.bc{display:flex;gap:.45rem;align-items:center;font-size:.92rem;color:var(--t3);flex:1;min-width:0;white-space:nowrap}.bc b{color:var(--ink);font-weight:600}
-.sk{display:flex;align-items:center;gap:.5rem;border:1px solid var(--ln2);background:var(--pn);border-radius:6px;padding:.36rem .6rem;width:15rem;color:var(--t3);cursor:pointer;font-size:.9rem}
-kbd{margin-left:auto;font:.72rem var(--sans);border:1px solid var(--ln2);border-radius:4px;padding:0 .3rem;white-space:nowrap}
-.zm{position:relative}.zmm{display:none;position:absolute;right:0;top:2.6rem;background:var(--pn);border:1px solid var(--ln2);border-radius:8px;padding:.4rem;width:14rem;z-index:20}
-.zm.on .zmm{display:block}.zmm p{margin:.2rem .4rem .4rem;font-size:.8rem;color:var(--t3)}
-.zmm button{display:flex;width:100%;justify-content:space-between;border:0;background:none;padding:.4rem .5rem;border-radius:5px;cursor:pointer}.zmm button:hover{background:var(--sb)}.zmm button.on{font-weight:700;color:var(--ac)}
-.av{width:1.9rem;height:1.9rem;border-radius:50%;border:1px solid var(--ln2);display:grid;place-items:center;font-size:.78rem;font-weight:700;background:var(--pn)}
-.usr{display:flex;align-items:center;gap:.5rem;font-size:.88rem;padding-left:.6rem;border-left:1px solid var(--ln);white-space:nowrap}
-.usr small{display:block;color:var(--t3);font-size:.74rem;line-height:1.1}
-#v{padding:1.5rem 1.6rem 3rem;max-width:1200px;margin:0 auto}
-.ph{display:flex;align-items:flex-end;gap:1rem;margin-bottom:1.2rem}.ph h1{font:400 1.75rem/1.2 var(--serif);margin:0}.ph p{margin:.2rem 0 0;color:var(--t2);font-size:.95rem}.ph .ac{margin-left:auto;display:flex;gap:.5rem}
-.tabs{display:flex;gap:1.3rem;border-bottom:1px solid var(--ln);margin-bottom:1rem}.tabs button{border:0;background:none;padding:.5rem 0;cursor:pointer;color:var(--t2);border-bottom:2px solid transparent;margin-bottom:-1px;font-size:.93rem}.tabs button.on{color:var(--ink);font-weight:600;border-color:var(--ink)}
-.pn{border:1px solid var(--ln);background:var(--pn);border-radius:8px}.pnh{display:flex;align-items:center;padding:.7rem 1rem;border-bottom:1px solid var(--ln)}.pnh h3{margin:0;font-size:.95rem}.pnh .btn{margin-left:auto}
-/* KPIs */
-.kp{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--ln);border-radius:8px;background:var(--pn);margin-bottom:1rem}
-.kp>div{padding:.9rem 1rem;border-left:1px solid var(--ln)}.kp>div:first-child{border:0}
-.kp small{color:var(--t2);font-size:.85rem}.kp b{display:block;font:400 1.75rem/1.25 var(--serif);margin:.2rem 0}.kp .tr{display:flex;align-items:center;justify-content:space-between;font-size:.8rem;color:var(--t3)}
-.up{color:var(--ok)}.dn{color:var(--ac)}
-.g2{display:grid;grid-template-columns:1.6fr 1fr;gap:1rem;margin-bottom:1rem}.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
-.li{display:flex;gap:.8rem;align-items:center;padding:.6rem 1rem;border-top:1px solid var(--ln);font-size:.92rem}.li:first-child{border:0}
-.li .tm{width:3.2rem;color:var(--t3);font-variant-numeric:tabular-nums}.li .x{flex:1;min-width:0}.li small{display:block;color:var(--t3);font-size:.8rem}
-.qa{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;padding:.8rem}.qa .btn{justify-content:flex-start}
-/* badges */
-.bd{display:inline-flex;align-items:center;gap:.35rem;font-size:.78rem;font-weight:600;padding:.08rem .5rem;border-radius:99px;border:1px solid var(--ln2);color:var(--t2);white-space:nowrap}
-.bd:before{content:"";width:.42rem;height:.42rem;border-radius:50%;background:currentColor}
-.bd.ok{color:var(--ok);background:var(--oks);border-color:#cbdcc7}.bd.wa{color:var(--wa);background:var(--was);border-color:#e7d9ad}.bd.ac{color:var(--ac);background:var(--acs);border-color:#e6cfd2}
-/* table */
-.fb{display:flex;gap:.5rem;align-items:center;padding:.7rem .8rem;border-bottom:1px solid var(--ln);flex-wrap:wrap}
-.chip{border:1px dashed var(--ln2);background:none;border-radius:99px;padding:.22rem .7rem;font-size:.85rem;cursor:pointer;color:var(--t2)}.chip.on{border-style:solid;border-color:var(--ink);color:var(--ink);font-weight:600}
-.fs{display:flex;align-items:center;gap:.4rem;border:1px solid var(--ln2);border-radius:6px;padding:.28rem .55rem;background:#fff;margin-left:auto;width:15rem}.fs input{border:0;outline:0;width:100%;font-size:.9rem;background:none}
-.sel{border:1px solid var(--ln2);border-radius:6px;padding:.28rem .5rem;background:#fff;font-size:.88rem}
-table{width:100%;border-collapse:collapse;font-size:.92rem}th{text-align:left;font-size:.8rem;font-weight:600;color:var(--t2);padding:.55rem .8rem;border-bottom:1px solid var(--ln);white-space:nowrap;background:#fbf9f5}
-th.s{cursor:pointer}th.s:hover{color:var(--ink)}th .ar{opacity:.5;margin-left:.2rem}th.on .ar{opacity:1;color:var(--ac)}
-td{padding:.55rem .8rem;white-space:nowrap;border-bottom:1px solid var(--ln);vertical-align:middle}td b{white-space:normal;display:inline-block;min-width:10rem}tr.r{cursor:pointer}tr.r:hover td{background:#f7f4ee}tr.sl td{background:var(--acs)!important}
-td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}td small{display:block;color:var(--t3);font-size:.8rem}
-input[type=checkbox]{width:1rem;height:1rem;accent-color:var(--ac)}
-.pg{display:flex;align-items:center;gap:.5rem;padding:.6rem .8rem;font-size:.86rem;color:var(--t2)}.pg .btn{padding:.25rem .6rem}.pg span:first-child{margin-right:auto}
-.bulk{display:none;align-items:center;gap:.6rem;padding:.5rem .8rem;background:var(--ink);color:#fff;font-size:.9rem;border-radius:7px 7px 0 0}.bulk.on{display:flex}.bulk .btn{background:none;color:#fff;border-color:#666;padding:.25rem .6rem}
-/* drawer, modal */
-#scr{position:fixed;inset:0;background:rgba(27,26,23,.35);display:none;z-index:30}#scr.on{display:block}
-.dr{position:fixed;top:0;right:0;bottom:0;width:34rem;max-width:92vw;background:var(--pn);border-left:1px solid var(--ln2);z-index:31;transform:translateX(102%);transition:transform .2s;display:flex;flex-direction:column}.dr.on{transform:none}
-.drh{display:flex;align-items:flex-start;gap:.8rem;padding:1rem 1.2rem;border-bottom:1px solid var(--ln)}.drh h2{font:400 1.4rem var(--serif);margin:0}.drh p{margin:.1rem 0 0;color:var(--t2);font-size:.88rem}.drh .btn{margin-left:auto}
-.drb{padding:1rem 1.2rem;overflow:auto;flex:1}.drf{padding:.8rem 1.2rem;border-top:1px solid var(--ln);display:flex;gap:.5rem;justify-content:flex-end}
-dl{display:grid;grid-template-columns:9rem 1fr;gap:.45rem 1rem;margin:0 0 1rem;font-size:.92rem}dt{color:var(--t3)}dd{margin:0}
-.tl{border-left:1px solid var(--ln2);margin:.4rem 0 1rem .4rem;padding-left:1rem}.tl div{position:relative;padding:.3rem 0;font-size:.92rem}.tl div:before{content:"";position:absolute;left:-1.33rem;top:.75rem;width:.55rem;height:.55rem;border-radius:50%;background:var(--pn);border:1.5px solid var(--t3)}.tl div.ok:before{background:var(--ink);border-color:var(--ink)}
-.tl small{color:var(--t3)}.tl a{color:var(--ac);font-size:.85rem;margin-left:.4rem;cursor:pointer}
-.nt{border:1px solid #e7d9ad;background:var(--was);border-radius:6px;padding:.6rem .8rem;font-size:.88rem;margin-bottom:1rem;display:flex;gap:.5rem}
-h4{font-size:.78rem;letter-spacing:.07em;text-transform:uppercase;color:var(--t3);margin:1rem 0 .4rem}
-.md{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:46rem;max-width:94vw;background:var(--pn);border:1px solid var(--ln2);border-radius:10px;z-index:32;display:none;flex-direction:column;max-height:90vh}.md.on{display:flex}
-.wz{display:grid;grid-template-columns:13rem 1fr;min-height:24rem}.wzs{border-right:1px solid var(--ln);padding:1rem;background:#fbf9f5;border-radius:0 0 0 10px}
-.wzs div{display:flex;gap:.6rem;align-items:center;padding:.38rem 0;font-size:.9rem;color:var(--t3)}.wzs i{font-style:normal;width:1.4rem;height:1.4rem;border-radius:50%;border:1px solid var(--ln2);display:grid;place-items:center;font-size:.75rem}
-.wzs .on{color:var(--ink);font-weight:600}.wzs .on i{border-color:var(--ink);background:var(--ink);color:#fff}.wzs .dn i{border-color:var(--ink);color:var(--ink)}
-.wzb{padding:1.2rem 1.4rem}.wzb h3{font:400 1.3rem var(--serif);margin:0 0 .2rem}.wzb>p{color:var(--t2);margin:0 0 1rem;font-size:.92rem}
-.r2{display:grid;grid-template-columns:1fr 1fr;gap:0 1rem}.hint{font-size:.82rem;color:var(--t3);margin-top:-.6rem;margin-bottom:1rem}
-.cf{width:28rem}
-#toast{position:fixed;left:50%;bottom:1.4rem;transform:translateX(-50%);background:var(--ink);color:#fff;border-radius:8px;padding:.6rem .7rem .6rem 1rem;display:none;align-items:center;gap:.9rem;z-index:40;font-size:.92rem}#toast.on{display:flex}#toast .btn{background:none;color:#fff;border-color:#777}
-.pal{position:fixed;left:50%;top:12vh;transform:translateX(-50%);width:38rem;background:var(--pn);border:1px solid var(--ln2);border-radius:10px;z-index:32;display:none}.pal.on{display:block}
-.pal input{width:100%;border:0;border-bottom:1px solid var(--ln);padding:.9rem 1rem;font-size:1.05rem;outline:0;background:none;border-radius:10px 10px 0 0}
-.pal .gt{font-size:.75rem;letter-spacing:.07em;text-transform:uppercase;color:var(--t3);padding:.6rem 1rem .2rem}.pal .it{display:flex;gap:.6rem;align-items:center;padding:.45rem 1rem;cursor:pointer;font-size:.93rem}.pal .it:hover,.pal .it.on{background:var(--sb)}.pal .it small{margin-left:auto;color:var(--t3)}
-.paper{background:#fff;border:1px solid var(--ln2);padding:2.2rem 2.6rem;font-family:var(--serif);font-size:.98rem;line-height:1.7;position:relative}
-.paper h2{text-align:center;letter-spacing:.2em;font-weight:400;margin:.3rem 0}.paper .c{text-align:center;color:var(--t2);font-size:.85rem}
-.seal{position:absolute;right:2.4rem;bottom:1.6rem;width:5rem;height:5rem;border:1.5px solid var(--ac);border-radius:50%;color:var(--ac);display:grid;place-items:center;font:.6rem var(--sans);text-align:center;letter-spacing:.06em}
-.chart{padding:.6rem 1rem 1rem}.chart text{font:14px var(--sans);fill:#6b665d}
-.perm td{text-align:center}.perm td:first-child{text-align:left}.ck{color:var(--ink)}.no{color:#b5afa4}
-.bar{height:.45rem;background:var(--ln);border-radius:9px;overflow:hidden;width:7rem;display:inline-block;vertical-align:middle;margin-right:.4rem}.bar i{display:block;height:100%;background:var(--ink)}
-body[data-z="125"] .sk,body[data-z="150"] .sk{width:auto}body[data-z="125"] .sk kbd,body[data-z="150"] .sk kbd,body[data-z="150"] .usr div{display:none}
-body[data-z="125"] .kp,body[data-z="150"] .kp{grid-template-columns:1fr 1fr}body[data-z="125"] .kp>div:nth-child(3),body[data-z="150"] .kp>div:nth-child(3){border-left:0}body[data-z="125"] .kp>div:nth-child(n+3),body[data-z="150"] .kp>div:nth-child(n+3){border-top:1px solid var(--ln)}
-body[data-z="150"] .g2,body[data-z="150"] .g3{grid-template-columns:1fr}body[data-z="125"] .g3{grid-template-columns:1fr 1fr}
-body[data-z="125"] .ph,body[data-z="150"] .ph{flex-wrap:wrap}body[data-z="125"] .ph .ac,body[data-z="150"] .ph .ac{margin-left:0}
-body[data-z="125"] #t-fel :is(th,td):is(:nth-child(4),:nth-child(5)),body[data-z="150"] #t-fel :is(th,td):is(:nth-child(4),:nth-child(5)),body[data-z="125"] #t-sac :is(th,td):nth-child(5),body[data-z="150"] #t-sac :is(th,td):nth-child(5),body[data-z="125"] .hz,body[data-z="150"] .hz{display:none}
-
-.sbu{display:none}
-@media (max-width:1023px){
- aside{transform:translateX(-102%);transition:transform .2s;z-index:35;width:280px}aside.on{transform:none}
- .main{margin-left:0}.mb{display:inline-flex}
- .kp{grid-template-columns:1fr 1fr}.kp>div:nth-child(3){border-left:0}.kp>div:nth-child(n+3){border-top:1px solid var(--ln)}
- .g2,.g3{grid-template-columns:1fr}
- .sk{width:auto}
- #t-fel :is(th,td):is(:nth-child(4),:nth-child(5)),#t-sac :is(th,td):nth-child(5),#t-fin :is(th,td):nth-child(4){display:none}
-}
-@media (max-width:767px){
- html{-webkit-text-size-adjust:100%}
- header{padding:0 .7rem;gap:.25rem;height:3.6rem}.bc,.usr,.sk kbd{display:none}.sk{border:0;background:none;padding:.4rem .5rem;color:var(--ink);font-weight:500}
- header .btn,header .sk{min-height:44px}header .btn,header .sk{padding:.4rem .45rem;font-size:.88rem;gap:.3rem}.zm{margin-left:auto}
- #v{padding:1rem .9rem 6rem}
- .ph{flex-wrap:wrap}.ph h1{font-size:1.5rem}
- .ph .ac{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--pn);border-top:1px solid var(--ln);padding:.6rem .9rem calc(.6rem + env(safe-area-inset-bottom));margin:0}.ph .ac .btn{flex:1;justify-content:center}
- .btn,.chip,nav a,.sel,.fs,.pal .it,.zmm button{min-height:44px}.chip{padding:.3rem .9rem}
- .kp>div{padding:.8rem}.kp b{font-size:1.5rem}.kp svg{display:none}.kp .tr{font-size:.78rem}
- .fs{width:100%;margin-left:0}.fb{gap:.4rem}
- .tabs{overflow-x:auto;gap:1rem;scrollbar-width:none}.tabs button{white-space:nowrap;min-height:44px}
- .pnh{flex-wrap:wrap}.qa{grid-template-columns:1fr}
- .chart text{font-size:20px}
- table,tbody{display:block}thead{display:none}
- tbody tr{display:flex;flex-wrap:wrap;align-items:center;gap:.15rem .6rem;padding:.75rem .9rem;border-bottom:1px solid var(--ln)}
- tbody td{display:none;border:0;padding:0;white-space:normal}
- tbody td:first-child,tbody td.k,tbody td:has(.bd),tbody td:has(>button.btn),tbody td:has(>b){display:block}
- tbody td:has(>b){flex:1 1 0;min-width:0;order:1}tbody td:first-child{order:0}tbody td:has(>input){display:flex;align-items:center;min-height:44px}
- tbody td:has(.bd){order:2}tbody td.k{order:3;flex-basis:100%;color:var(--t2);font-size:.88rem;padding-left:1.6rem}
- tbody td:has(>button.btn){order:4;flex-basis:100%;padding-left:1.6rem}tbody td:has(>button.btn) .btn{padding-left:0}
- td b{min-width:0}table:not(:has(input)) td.k{padding-left:0}table:not(:has(input)) td:has(>button.btn){padding-left:0}
- .perm tbody td{display:flex!important;flex-basis:100%;justify-content:space-between;order:5;font-size:.9rem}.perm tbody td:before{content:attr(data-l);color:var(--t3)}.perm tbody td:first-child:before{content:none}
- .pg{flex-wrap:wrap}.pg span:first-child{flex-basis:100%}
- .bulk{flex-wrap:wrap}
- .dr{width:100%;max-width:100%;border:0}.drh{padding:.8rem .9rem}.drh h2{font-size:1.25rem}.drb{padding:.9rem}.drf{padding:.6rem .9rem}.drf .btn{flex:1;justify-content:center}
- dl{grid-template-columns:1fr;gap:0}dd{margin-bottom:.5rem}
- .md{inset:0;transform:none;width:100%!important;max-width:100%;max-height:100%;height:100%;border-radius:0;border:0;top:0;left:0}
- .md .drh{flex-wrap:wrap}.md .drh>span{flex-wrap:wrap;width:100%;justify-content:flex-start;margin:0!important}
- .wz{grid-template-columns:1fr;flex:1;overflow:auto;min-height:0}.wzs{display:flex;gap:.3rem;border-right:0;border-bottom:1px solid var(--ln);padding:.6rem .9rem;border-radius:0;overflow-x:auto}
- .wzs div{font-size:0;gap:0}.wzs div.on{font-size:.88rem;gap:.4rem}.wzs i{font-size:.75rem}.wzb{padding:1rem .9rem}.r2{grid-template-columns:1fr}
- .paper{padding:1.2rem}.paper h2{font-size:1.1rem;letter-spacing:.1em}.seal{position:static;margin:1rem 0 0 auto}
- .pal{inset:0;transform:none;width:100%;top:0;left:0;border-radius:0;height:100%;border:0}
- .zmm{right:-3rem}
- .sbu{display:flex;align-items:center;gap:.6rem;padding:.6rem .55rem;border-top:1px solid var(--ln);margin-top:.6rem;font-size:.9rem}.sbu small{display:block;color:var(--t3)}
- #toast{left:.9rem;right:.9rem;transform:none;bottom:5.2rem}
- .lg{width:auto;margin:1rem;border:0;background:none;padding:1rem}
-}
-</style></head><body data-z="100">
+<title>Gestión parroquial · Panel (v6 completo, prototipo)</title><link rel="stylesheet" href="app.css"></head><body data-z="100">
 <svg width="0" height="0" style="position:absolute"><defs>
 <symbol id="home" viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></symbol>
 <symbol id="users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.5-3.5 3.2-5.5 6.5-5.5s6 2 6.5 5.5"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.6c2 .7 3.3 2.6 3.5 5.4"/></symbol>
@@ -174,206 +27,41 @@ body[data-z="125"] #t-fel :is(th,td):is(:nth-child(4),:nth-child(5)),body[data-z
 <symbol id="print" viewBox="0 0 24 24"><path d="M7 9V3h10v6M7 17H4V9h16v8h-3M7 14h10v7H7z"/></symbol>
 <symbol id="out" viewBox="0 0 24 24"><path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10"/></symbol>
 <symbol id="cog" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/></symbol>
+
+<symbol id="bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15zM10 20a2 2 0 0 0 4 0"/></symbol>
+<symbol id="user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></symbol>
+<symbol id="edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16zM14 6l4 4"/></symbol>
+<symbol id="trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></symbol>
+<symbol id="up" viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></symbol>
+<symbol id="merge" viewBox="0 0 24 24"><path d="M6 3v6a6 6 0 0 0 6 6h0a6 6 0 0 1 6 6M18 3v6a6 6 0 0 1-3 5.2"/></symbol>
+<symbol id="mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="M3 7l9 6 9-6"/></symbol>
+<symbol id="chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></symbol>
+<symbol id="clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+<symbol id="check" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></symbol>
+<symbol id="ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M6 6l12 12"/></symbol>
+<symbol id="bld" viewBox="0 0 24 24"><path d="M4 21V9l8-5 8 5v12M9 21v-6h6v6M12 4V1"/></symbol>
+<symbol id="db" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v12c0 1.7 3 3 7 3s7-1.3 7-3V6M5 12c0 1.7 3 3 7 3s7-1.3 7-3"/></symbol>
+<symbol id="eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="1.5"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+<symbol id="list" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></symbol>
+<symbol id="clip" viewBox="0 0 24 24"><path d="M20 11l-8 8a5 5 0 0 1-7-7l8-8a3.5 3.5 0 0 1 5 5l-8 8a2 2 0 0 1-3-3l7-7"/></symbol>
+<symbol id="swap" viewBox="0 0 24 24"><path d="M4 8h14l-3-3M20 16H6l3 3"/></symbol>
+<symbol id="refresh" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5"/></symbol>
+<symbol id="menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+<symbol id="send" viewBox="0 0 24 24"><path d="M4 12l16-8-6 16-2-6z"/></symbol>
 </defs></svg>
-
-<section id="login"><form class="lg" onsubmit="event.preventDefault();entrar()">
-<small style="letter-spacing:.1em;text-transform:uppercase;color:var(--t3);font-size:.75rem">Diócesis de San Ejemplo</small>
-<h1>Gestión parroquial</h1><p>Inicie sesión para continuar.</p>
-<label class="fld"><span>Correo electrónico</span><input value="carmen.ruiz@sanjose.example" autocomplete="off"></label>
-<label class="fld"><span>Contraseña</span><input type="password" value="demodemo"></label>
-<label class="fld"><span>Parroquia</span><select><option>Parroquia San José · Lima</option><option>Parroquia Santa Rosa</option><option>Curia diocesana</option></select></label>
-<button class="btn p">Entrar</button>
-<div class="lgf">Prototipo de demostración · datos ficticios</div></form></section>
-
-<div id="app"><aside>
-<button class="ps" onclick="toast('Cambio de parroquia (demo)')"><span class="m">S</span><span><b>San José</b><small>Lima · cambiar</small></span><svg class="i" style="margin-left:auto"><use href="#chev"/></svg></button>
-<nav id="nav"></nav>
-<div class="sbu"><span class="av">CR</span><div>Carmen Ruiz<small>Secretaría</small></div></div><div class="sbf">Prototipo v6 · datos ficticios</div></aside>
+<section id="login"></section>
+<div id="app"><aside><button class="ps" onclick="cambiarPar()" id="psb"></button><nav id="nav"></nav>
+<div class="sbu" id="sbu"></div><div class="sbf">Prototipo v6 · datos ficticios</div></aside>
 <div class="main"><header>
-<button class="btn g mb" onclick="menu()" aria-label="Abrir menú"><svg class="i" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>Menú</button><div class="bc" id="bc"></div>
+<button class="btn g mb" onclick="menu()" aria-label="Abrir menú"><svg class='i'><use href='#menu'/></svg>Menú</button>
+<div class="bc" id="bc"></div>
 <button class="sk" onclick="pal()"><svg class="i"><use href="#srch"/></svg>Buscar<kbd>Ctrl K</kbd></button>
-<div class="zm"><button class="btn g" onclick="this.parentNode.classList.toggle('on')" aria-label="Tamaño del texto"><svg class="i"><use href="#aa"/></svg><span id="zl">100%</span></button>
-<div class="zmm"><p>Tamaño del texto</p><div id="zb"></div></div></div>
-<button class="btn g" onclick="ayuda()"><svg class="i"><use href="#help"/></svg>Ayuda</button>
-<div class="usr"><span class="av">CR</span><div>Carmen Ruiz<small>Secretaría</small></div></div>
+<div class="dd" id="bellw"><button class="btn g" onclick="notifs(event)" id="bellb" aria-haspopup="true"></button><div class="ddm np" id="npn"></div></div>
+<div class="zm"><button class="btn g" onclick="this.parentNode.classList.toggle('on')" aria-label="Tamaño del texto"><svg class="i"><use href="#aa"/></svg><span id="zl">100%</span></button><div class="zmm"><p>Tamaño del texto</p><div id="zb"></div></div></div>
+<button class="btn g hlp" onclick="ayuda()"><svg class="i"><use href="#help"/></svg>Ayuda</button>
+<div class="dd usr" id="um"><button class="btn g" onclick="this.parentNode.classList.toggle('on')" style="padding:.2rem .3rem" aria-haspopup="true"><span class="av" id="uav">CR</span><div style="text-align:left" id="unm"></div><svg class="i"><use href="#chev"/></svg></button><div class="ddm" id="umm"></div></div>
 </header><main id="v"></main></div></div>
-
-<div id="scr" onclick="cerrar()"></div>
-<div class="dr" id="dr"></div>
-<div class="md" id="md"></div>
-<div class="pal" id="pal"></div>
-<div id="toast"></div>
-
-<script>
-const $=s=>document.querySelector(s),I=n=>`<svg class="i"><use href="#${n}"/></svg>`;
-const NAV=[["General",[["inicio","home","Inicio"]]],["Registro",[["feligreses","users","Feligreses",1284],["sacramentos","book","Sacramentos"],["agenda","cal","Agenda",12],["catequesis","grad","Catequesis"]]],["Administración",[["finanzas","coin","Finanzas"],["clero","cross","Clero y personal"],["reportes","chart","Reportes"]]],["Sistema",[["usuarios","key","Usuarios y roles"],["auditoria","log","Auditoría"]]]];
-const LBL={};NAV.forEach(g=>g[1].forEach(x=>LBL[x[0]]=[x[2],g[0]]));
-let cur="inicio";
-function entrar(){$('#login').style.display='none';$('#app').classList.add('on');go('inicio')}
-function salir(){cerrar()}
-function nav(){$('#nav').innerHTML=NAV.map(g=>`<div class="grp">${g[0]}</div>`+g[1].map(x=>`<a class="${x[0]==cur?'on':''}" onclick="go('${x[0]}')">${I(x[1])}${x[2]}${x[3]?`<span class="n">${x[3].toLocaleString('es')}</span>`:''}</a>`).join('')).join('')}
-function menu(){cerrar();$('aside').classList.add('on');scr(true)}
-function go(r,t){cerrar();cur=r;nav();const l=LBL[r];$('#bc').innerHTML=`<span>San José</span>${I('right')}<span>${l[1]}</span>${I('right')}<b>${l[0]}</b>`;$('#v').innerHTML=V[r](t||0);window.scrollTo(0,0)}
-function ph(t,s,ac){return `<div class="ph"><div><h1>${t}</h1><p>${s}</p></div><div class="ac">${ac||''}</div></div>`}
-function tabs(r,a,i){return `<div class="tabs">${a.map((x,j)=>`<button class="${j==i?'on':''}" onclick="go('${r}',${j})">${x}</button>`).join('')}</div>`}
-const bd=(t,c)=>`<span class="bd ${c||''}">${t}</span>`;
-function spark(a,c){const mx=Math.max(...a),mn=Math.min(...a);return `<svg width="84" height="22" viewBox="0 0 84 22"><polyline fill="none" stroke="${c||'#1b1a17'}" stroke-width="1.4" points="${a.map((v,i)=>`${i*84/(a.length-1)},${20-(v-mn)/(mx-mn||1)*17}`).join(' ')}"/></svg>`}
-/* ---------- data ---------- */
-const P=[["diego","Diego Armando Paredes Vega","10/04/1987","Urb. Los Pinos 214","Activo","B·C·E·M","Familia Paredes Lima"],["sofia","Sofía Valentina Quispe Rojas","02/03/2026","Jr. Junín 455","Posible duplicado","B","Familia Quispe Rojas"],["ana","Ana Lucía Pérez Salas","21/08/1979","Av. Grau 1020","Activo","B·C·E·M","Familia Pérez"],["mateo","Mateo Huamán Ccori","15/01/2014","Jr. Ica 312","En catequesis","B·E","Familia Huamán"],["rosa","Rosa Elvira Chávez Luna","03/11/1952","Calle Real 88","Activo","B·C·E·M","Familia Chávez"],["luis","Luis Fernando Torres Ríos","30/06/1990","Av. Arequipa 2210","Activo","B·C·E","—"],["valeria","Valeria Castillo Vega","05/05/2026","Jr. Huallaga 77","Activo","B","Familia Castillo"],["jorge","Jorge Mendoza Paz","12/12/1965","Psje. Las Flores 9","Fallecido","B·C·E·M·U","Familia Mendoza"],["camila","Camila Ramos Díaz","19/09/2012","Jr. Cusco 640","En catequesis","B·E","Familia Ramos"],["pedro","Pedro Salazar Núñez","08/02/1984","Av. Brasil 1501","Inactivo","B·C","—"],["lucia","Lucía Fernández Ortiz","27/07/1995","Jr. Moquegua 203","Activo","B·C·E","Familia Fernández"],["thiago","Thiago Mendoza Paz","01/06/2026","Psje. Las Flores 9","Activo","B","Familia Mendoza"]];
-const EST={"Activo":"ok","Posible duplicado":"wa","En catequesis":"","Fallecido":"","Inactivo":""};
-const SAC=[["XII·47·182","Bautismo","Valeria Castillo Vega","12/07/2026","P. Andrés Soto","Inscrita"],["XII·46·181","Bautismo","Thiago Mendoza Paz","05/07/2026","Pbro. L. Torres","Inscrita"],["V·31·122","Confirmación","Lucía Fernández Ortiz","28/06/2026","Mons. R. Aguirre","Inscrita"],["XII·45·178","Bautismo","Sofía Valentina Quispe Rojas","14/06/2026","Pbro. L. Torres","Nota marginal"],["VIII·12·58","Matrimonio","Luis Torres · María Gil","07/06/2026","Pbro. L. Torres","Inscrita"],["IV·20·77","Defunción","Jorge Mendoza Paz","30/05/2026","P. Andrés Soto","Inscrita"],["XII·44·175","Bautismo","Emma Ríos Calle","24/05/2026","P. Andrés Soto","Pendiente firma"],["V·30·119","Confirmación","Mateo Huamán Ccori","17/05/2026","Mons. R. Aguirre","Pendiente firma"],["VIII·11·55","Matrimonio","Pedro Salazar · Inés Vela","10/05/2026","Pbro. L. Torres","Inscrita"],["XII·43·171","Bautismo","Gael Soto Aranda","03/05/2026","Pbro. L. Torres","Inscrita"]];
-const SE={"Inscrita":"ok","Nota marginal":"","Pendiente firma":"wa"};
-/* ---------- generic table ---------- */
-const T={};
-function table(id,cfg){T[id]=Object.assign({q:"",chip:0,sort:null,dir:1,page:0,sel:new Set(),per:8},T[id]||{},cfg);return `<div class="pn" id="t-${id}">${tbody(id)}</div>`}
-function tbody(id){const t=T[id];let rows=t.rows.filter(r=>(!t.chip||t.chipf(r,t.chips[t.chip]))&&r.join(' ').toLowerCase().includes(t.q.toLowerCase()));
- if(t.sort!=null)rows=[...rows].sort((a,b)=>(''+a[t.sort]).localeCompare(''+b[t.sort],'es',{numeric:true})*t.dir);
- const n=rows.length,pgs=Math.max(1,Math.ceil(n/t.per));t.page=Math.min(t.page,pgs-1);const vis=rows.slice(t.page*t.per,t.page*t.per+t.per);
- return `<div class="bulk ${t.sel.size?'on':''}"><b>${t.sel.size} seleccionados</b>${(t.bulk||[]).map(b=>`<button class="btn" onclick="toast('${b}: ${t.sel.size} registros (demo)',1)">${b}</button>`).join('')}<button class="btn" style="margin-left:auto" onclick="T['${id}'].sel.clear();rt('${id}')">${I('x')}Quitar selección</button></div>
- <div class="fb">${I('flt')}${t.chips.map((c,i)=>`<button class="chip ${i==t.chip?'on':''}" onclick="T['${id}'].chip=${i};T['${id}'].page=0;rt('${id}')">${c}</button>`).join('')}${t.extra||''}<label class="fs">${I('srch')}<input placeholder="Filtrar ${t.noun}…" value="${t.q}" oninput="T['${id}'].q=this.value;T['${id}'].page=0;rt('${id}',1)" aria-label="Filtrar"></label></div>
- <div style="overflow-x:auto"><table><thead><tr><th style="width:2.4rem"><input type="checkbox" aria-label="Seleccionar todo" onclick="${vis.map(r=>`T['${id}'].sel[this.checked?'add':'delete']('${r[0]}');`).join('')}rt('${id}')" ${vis.length&&vis.every(r=>t.sel.has(r[0]))?'checked':''}></th>${t.cols.map((c,i)=>c[1]===false?`<th class="${c[2]||''}">${c[0]}</th>`:`<th class="s ${t.sort==c[1]?'on':''} ${c[2]||''}" onclick="srt('${id}',${c[1]})">${c[0]}<span class="ar">${t.sort==c[1]?(t.dir>0?'↑':'↓'):'↕'}</span></th>`).join('')}</tr></thead>
- <tbody>${vis.map(r=>`<tr class="r ${t.sel.has(r[0])?'sl':''}" onclick="${t.open?t.open(r):''}"><td onclick="event.stopPropagation()"><input type="checkbox" aria-label="Seleccionar" ${t.sel.has(r[0])?'checked':''} onclick="T['${id}'].sel[this.checked?'add':'delete']('${r[0]}');rt('${id}')"></td>${mk(t.cell(r),t.k??1,t.cols)}</tr>`).join('')||`<tr><td colspan="9" style="text-align:center;color:var(--t3);padding:2rem">Sin resultados</td></tr>`}</tbody></table></div>
- <div class="pg"><span>${n?t.page*t.per+1:0}–${Math.min(n,t.page*t.per+t.per)} de ${t.total&&!t.q&&!t.chip?t.total:n}</span><button class="btn" ${t.page?'':'disabled'} onclick="T['${id}'].page--;rt('${id}')">${I('left')}Anterior</button><span>Página ${t.page+1} de ${t.total&&!t.q&&!t.chip?Math.ceil(t.total/t.per):pgs}</span><button class="btn" onclick="if(T['${id}'].page<${pgs-1}){T['${id}'].page++;rt('${id}')}else toast('Más páginas (demo)')">Siguiente${I('right')}</button></div>`}
-function mk(h,k,cols){return h.split('<td').slice(1).map((x,i)=>{const l=cols&&cols[i]?` data-l="${cols[i][0]}"`:'';if(i!=k)return '<td'+l+x;return x.startsWith(' class="')?'<td'+l+' class="k '+x.slice(8):'<td'+l+' class="k"'+x}).join('')}
-function rt(id,f){const e=$('#t-'+id);const fo=f&&document.activeElement;e.innerHTML=tbody(id);if(f){const i=e.querySelector('.fs input');i.focus();i.setSelectionRange(99,99)}}
-function srt(id,c){const t=T[id];t.dir=t.sort==c?-t.dir:1;t.sort=c;rt(id)}
-/* ---------- views ---------- */
-const V={};
-V.inicio=()=>ph('Buenas tardes, Carmen','Martes 13 de octubre de 2026 · XXVIII semana del Tiempo Ordinario',`<button class="btn" onclick="intencion()">${I('cand')}Nueva intención</button><button class="btn p" onclick="bautizo()">${I('plus')}Registrar bautizo</button>`)+
-`<div class="kp">
-<div><small>Sacramentos del mes</small><b>18</b><div class="tr"><span class="up">+4 vs. septiembre</span>${spark([9,12,11,14,13,16,18])}</div></div>
-<div><small>Intenciones de la semana</small><b>42</b><div class="tr"><span>12 sin asignar</span>${spark([30,34,29,38,36,40,42])}</div></div>
-<div><small>Caja del día</small><b>S/ 1 245</b><div class="tr"><span class="up">+S/ 180 vs. ayer</span>${spark([800,950,700,1100,1065,980,1245])}</div></div>
-<div><small>Pendientes</small><b>7</b><div class="tr"><span class="dn">2 vencen hoy</span>${spark([4,6,5,9,8,6,7],'#7a2531')}</div></div></div>
-<div class="g2"><div class="pn"><div class="pnh"><h3>Ingresos y gastos · últimos 6 meses</h3><select class="sel" style="margin-left:auto" aria-label="Periodo"><option>6 meses</option><option>12 meses</option></select></div>
-<div class="chart"><svg viewBox="0 0 640 210" width="100%" role="img" aria-label="Ingresos de mayo a octubre, tendencia al alza; gastos estables">
-${[0,1,2,3].map(i=>`<line x1="44" x2="630" y1="${20+i*55}" y2="${20+i*55}" stroke="#e3ded4"/><text x="0" y="${24+i*55}">S/ ${(30-i*10)}k</text>`).join('')}
-${['May','Jun','Jul','Ago','Sep','Oct'].map((m,i)=>`<text x="${64+i*112}" y="205" text-anchor="${i==5?'end':'middle'}">${m}</text>`).join('')}
-<polyline fill="none" stroke="#1b1a17" stroke-width="1.8" points="64,95 176,82 288,100 400,70 512,62 624,48"/>
-<polyline fill="none" stroke="#7a2531" stroke-width="1.5" stroke-dasharray="4 4" points="64,130 176,126 288,134 400,122 512,128 624,120"/>
-${[[64,95],[176,82],[288,100],[400,70],[512,62],[624,48]].map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="3" fill="#fffdf9" stroke="#1b1a17" stroke-width="1.5"/>`).join('')}
-</svg><div style="display:flex;gap:1.4rem;font-size:.85rem;color:var(--t2)"><span><svg width="22" height="8"><line x1="0" x2="22" y1="4" y2="4" stroke="#1b1a17" stroke-width="2"/></svg> Ingresos · S/ 26 480 en octubre</span><span><svg width="22" height="8"><line x1="0" x2="22" y1="4" y2="4" stroke="#7a2531" stroke-width="2" stroke-dasharray="4 3"/></svg> Gastos · S/ 14 120</span></div></div></div>
-<div class="pn"><div class="pnh"><h3>Accesos rápidos</h3></div><div class="qa">
-<button class="btn" onclick="bautizo()">${I('plus')}Bautizo</button><button class="btn" onclick="intencion()">${I('cand')}Intención</button>
-<button class="btn" onclick="partida()">${I('doc')}Emitir partida</button><button class="btn" onclick="go('feligreses')">${I('users')}Nuevo feligrés</button>
-<button class="btn" onclick="go('finanzas')">${I('coin')}Registrar ingreso</button><button class="btn" onclick="go('catequesis')">${I('grad')}Asistencia</button></div>
-<div style="border-top:1px solid var(--ln);padding:.7rem 1rem;font-size:.86rem;color:var(--t2)">Último respaldo: hoy 06:00 · Libro de bautismos XII, folio 47</div></div></div>
-<div class="g3"><div class="pn"><div class="pnh"><h3>Hoy</h3><button class="btn g" onclick="go('agenda')">Ver agenda${I('right')}</button></div>
-${[["07:00","Misa · Templo principal","3 intenciones"],["16:00","Charla prebautismal","Salón parroquial · 6 familias"],["18:30","Bautizo de Emma Ríos","Pbro. L. Torres"],["19:00","Misa · Capilla Santa Rosa","9 intenciones"]].map(x=>`<div class="li"><span class="tm">${x[0]}</span><span class="x">${x[1]}<small>${x[2]}</small></span></div>`).join('')}</div>
-<div class="pn"><div class="pnh"><h3>Pendientes</h3><button class="btn g">Ver todos${I('right')}</button></div>
-${[["Firmar acta XII·44·175","Párroco",bd('Hoy','ac')],["Intenciones sin asignar (12)","Agenda",bd('Hoy','ac')],["Revisar posible duplicado","Sofía Quispe",bd('Revisar','wa')],["Expediente matrimonial Gil–Torres","Falta fe de bautismo",bd('3 días')]].map(x=>`<div class="li"><span class="x">${x[0]}<small>${x[1]}</small></span>${x[2]}</div>`).join('')}</div>
-<div class="pn"><div class="pnh"><h3>Actividad reciente</h3><button class="btn g" onclick="go('auditoria')">Auditoría${I('right')}</button></div>
-${[["Carmen Ruiz","emitió partida XII·45·178","10:42"],["Pbro. L. Torres","firmó acta V·31·122","09:15"],["Juana Ccori","registró asistencia Grupo 3","08:50"],["Carmen Ruiz","registró ingreso S/ 320","08:31"]].map(x=>`<div class="li"><span class="x"><b style="font-weight:600">${x[0]}</b> ${x[1]}</span><small>${x[2]}</small></div>`).join('')}</div></div>`;
-
-V.feligreses=()=>ph('Feligreses','1 284 personas · 412 familias',`<button class="btn">${I('dl')}Exportar</button><button class="btn p" onclick="toast('Formulario de nuevo feligrés (demo)')">${I('plus')}Nuevo feligrés</button>`)+
-table('fel',{noun:'por nombre o dirección',total:1284,rows:P,chips:['Todos','Activos','En catequesis','Duplicados'],chipf:(r,c)=>({Activos:'Activo','En catequesis':'En catequesis',Duplicados:'Posible duplicado'})[c]==r[4],
- extra:`<select class="sel" aria-label="Sector"><option>Todos los sectores</option><option>Sector 1</option></select>`,bulk:['Exportar','Asignar a familia','Imprimir etiquetas'],
- cols:[['Nombre',1],['Nacimiento',2],['Dirección',3],['Sacramentos',false],['Familia',6],['Estado',4]],
- cell:r=>`<td><b style="font-weight:600">${r[1]}</b></td><td>${r[2]}</td><td>${r[3]}</td><td style="letter-spacing:.05em;color:var(--t2)">${r[5]}</td><td>${r[6]}</td><td>${bd(r[4],EST[r[4]])}</td>`,open:r=>`ficha('${r[0]}')`});
-
-V.sacramentos=t=>ph('Sacramentos','Libros vigentes: bautismos XII · confirmaciones V · matrimonios VIII · defunciones IV',`<button class="btn" onclick="partida()">${I('doc')}Emitir partida</button><button class="btn p" onclick="bautizo()">${I('plus')}Registrar bautizo</button>`)+tabs('sacramentos',['Actas','Expedientes matrimoniales','Pedidos entre parroquias'],t)+
-(t==0?table('sac',{k:2,noun:'por nombre o libro',total:4210,rows:SAC,chips:['Todos','Bautismo','Confirmación','Matrimonio','Defunción'],chipf:(r,c)=>r[1]==c,bulk:['Emitir partidas','Enviar a firma'],
- cols:[['Acta',0],['Nombre',2],['Fecha',3],['Celebrante',4],['Estado',5],['',false]],
- cell:r=>`<td style="font-variant-numeric:tabular-nums">${r[0]}<small>${r[1]}</small></td><td><b style="font-weight:600">${r[2]}</b></td><td>${r[3]}</td><td>${r[4]}</td><td>${bd(r[5],SE[r[5]])}</td><td class="num"><button class="btn g" onclick="event.stopPropagation();partida()">${I('doc')}Partida</button></td>`,open:r=>`partida()`})
-:t==1?simple(['Contrayentes','Fecha prevista','Documentos','Estado'],[["Luis Torres · María Gil","21/11/2026",prog(4,6),bd('Falta fe de bautismo','wa')],["Andrés Vela · Rocío Paz","05/12/2026",prog(6,6),bd('Completo','ok')],["Kevin Rojas · Ana Mori","16/01/2027",prog(2,6),bd('En preparación')]])
-:simple(['Solicitud','Parroquia','Fecha','Estado'],[["Partida de bautismo · Ana Pérez","Santa Rosa","10/10/2026",bd('Por enviar','wa')],["Fe de bautismo · María Gil","San Martín (Cusco)","02/10/2026",bd('Solicitada')],["Nota marginal · Luis Torres","Catedral","28/09/2026",bd('Recibida','ok')]]));
-function prog(a,b){return `<span class="bar"><i style="width:${a/b*100}%"></i></span>${a}/${b}`}
-function simple(h,rows){return `<div class="pn"><table><thead><tr>${h.map((x,i)=>`<th class="${/Importe|Saldo/.test(x)?'num':''}">${x}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr class="r">${r.map((c,i)=>`<td data-l="${h[i]}" class="${i==1?'k ':''}${/^[−+]?S\//.test(c)?'num':''}">${i==0?`<b style="font-weight:600">${c}</b>`:c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`}
-
-V.agenda=t=>ph('Agenda e intenciones','Semana del 12 al 18 de octubre',`<button class="btn">${I('print')}Imprimir hoja de misa</button><button class="btn p" onclick="intencion()">${I('plus')}Nueva intención</button>`)+tabs('agenda',['Intenciones','Horarios de misa','Reservas','Calendario litúrgico'],t)+
-(t==0?table('int',{k:0,noun:'por intención o solicitante',total:42,rows:[["i1","Mar 13 · 19:00","Por el eterno descanso de Juan Pérez","Rosa Chávez","S/ 20","Asignada"],["i2","Mar 13 · 19:00","Acción de gracias · 50 años de matrimonio","Fam. Mendoza","S/ 20","Asignada"],["i3","Mié 14 · 07:00","Por la salud de Ana Salas","Lucía Fernández","S/ 20","Sin asignar"],["i4","Mié 14 · 19:00","Por las almas del purgatorio","Anónimo","S/ 10","Sin asignar"],["i5","Jue 15 · 07:00","Por el eterno descanso de Elena Ortiz","Pedro Salazar","S/ 20","Asignada"],["i6","Dom 18 · 10:00","Acción de gracias · cumpleaños","Valeria Castillo","S/ 20","Pendiente pago"]],
- chips:['Todas','Sin asignar','Pendiente pago'],chipf:(r,c)=>r[5]==c,bulk:['Asignar a misa','Imprimir recibos'],cols:[['Misa',1],['Intención',2],['Solicitante',3],['Ofrenda',4,'num'],['Estado',5]],
- cell:r=>`<td style="white-space:nowrap">${r[1]}</td><td><b style="font-weight:600;white-space:normal">${r[2]}</b></td><td>${r[3]}</td><td class="num">${r[4]}</td><td>${bd(r[5],r[5]=='Asignada'?'ok':'wa')}</td>`})
-:t==1?simple(['Día','Templo principal','Capilla Santa Rosa','Celebrante'],[["Lunes a sábado","07:00 · 19:00","18:00","Pbro. L. Torres"],["Domingo","08:00 · 10:00 · 12:00 · 19:00","09:00 · 17:00","P. A. Soto / Pbro. L. Torres"]])
-:t==2?simple(['Espacio','Fecha','Solicitante','Estado'],[["Templo principal · boda","21/11/2026 · 17:00","Torres–Gil",bd('Confirmada','ok')],["Salón parroquial","15/10/2026 · 16:00","Charla prebautismal",bd('Confirmada','ok')],["Capilla Santa Rosa","24/10/2026 · 11:00","Fam. Ramos",bd('Por confirmar','wa')]])
-:simple(['Fecha','Celebración','Grado','Color'],[["15/10","Santa Teresa de Jesús","Memoria","Blanco"],["18/10","XXIX Domingo del Tiempo Ordinario","Domingo","Verde"],["01/11","Todos los Santos","Solemnidad","Blanco"]]));
-
-V.catequesis=t=>ph('Catequesis','Año catequético 2026 · 214 catequizandos en 11 grupos',`<button class="btn">${I('dl')}Exportar</button><button class="btn p">${I('plus')}Inscribir</button>`)+tabs('catequesis',['Grupos','Catequistas','Asistencia','Requisitos'],t)+
-(t==0?table('cat',{k:2,noun:'grupos',rows:[["g1","Primera Comunión · Grupo 1","Juana Ccori","Sáb 10:00","22","96%"],["g2","Primera Comunión · Grupo 2","Marco Díaz","Sáb 10:00","20","91%"],["g3","Primera Comunión · Grupo 3","Juana Ccori","Dom 09:00","19","88%"],["g4","Confirmación · Grupo A","Elsa Vargas","Vie 18:00","25","84%"],["g5","Confirmación · Grupo B","Raúl Mori","Sáb 16:00","23","79%"],["g6","Catequesis familiar","Hna. Teresa","Dom 11:00","31","93%"]],chips:['Todos','Primera Comunión','Confirmación'],chipf:(r,c)=>r[1].startsWith(c),bulk:['Enviar aviso'],
- cols:[['Grupo',1],['Catequista',2],['Horario',3],['Inscritos',4,'num'],['Asistencia',5,'num']],cell:r=>`<td><b style="font-weight:600">${r[1]}</b></td><td>${r[2]}</td><td>${r[3]}</td><td class="num">${r[4]}</td><td class="num">${r[5]}</td>`})
-:t==3?simple(['Catequizando','Fe de bautismo','Pago','Asistencia','Estado'],[["Mateo Huamán Ccori",bd('Entregada','ok'),bd('Pagado','ok'),"92%",bd('Apto','ok')],["Camila Ramos Díaz",bd('Falta','wa'),bd('Pagado','ok'),"88%",bd('Pendiente','wa')],["Bruno Paredes Gómez",bd('Entregada','ok'),bd('Debe S/ 40','wa'),"71%",bd('Revisar','ac')]])
-:simple(['Nombre','Grupo','Teléfono','Estado'],[["Juana Ccori","PC 1 y 3","987 654 321",bd('Activa','ok')],["Marco Díaz","PC 2","912 345 678",bd('Activo','ok')],["Elsa Vargas","Confirmación A","934 222 111",bd('Activa','ok')]]));
-
-V.finanzas=t=>ph('Finanzas','Octubre 2026 · Caja y bancos',`<button class="btn">${I('dl')}Exportar</button><button class="btn p" onclick="toast('Movimiento registrado',1)">${I('plus')}Registrar movimiento</button>`)+
-`<div class="kp"><div><small>Saldo en caja</small><b>S/ 1 245,00</b><div class="tr"><span>Cierre pendiente</span>${spark([3,5,4,6,5,7,6])}</div></div><div><small>Ingresos del mes</small><b>S/ 26 480</b><div class="tr"><span class="up">+8 % vs. sept.</span>${spark([18,20,19,22,23,24,26])}</div></div><div><small>Gastos del mes</small><b>S/ 14 120</b><div class="tr"><span>53 % del presupuesto</span>${spark([12,13,15,14,13,14,14],'#7a2531')}</div></div><div><small>Aporte a la Curia</small><b>S/ 2 648</b><div class="tr"><span class="dn">Vence 31/10</span>${spark([2,2,2.4,2.5,2.6,2.6,2.65])}</div></div></div>`+
-tabs('finanzas',['Movimientos','Bancos','Presupuesto','Aportes a la Curia'],t)+
-(t==0?table('fin',{k:4,noun:'por concepto',total:186,rows:[["m1","13/10","Colecta misa dominical","Colectas","Caja","+S/ 840,00","Conciliado"],["m2","13/10","Estipendios de intenciones","Estipendios","Caja","+S/ 320,00","Conciliado"],["m3","12/10","Pago de luz · Luz del Sur","Servicios","BCP ···4021","−S/ 412,50","Conciliado"],["m4","12/10","Derecho de partida (3)","Aranceles","Caja","+S/ 75,00","Pendiente"],["m5","11/10","Flores y cirios","Culto","Caja","−S/ 180,00","Pendiente"],["m6","10/10","Donación · Fam. Mendoza","Donaciones","BCP ···4021","+S/ 1 500,00","Conciliado"],["m7","09/10","Honorarios organista","Personal","BCP ···4021","−S/ 600,00","Conciliado"]],
- chips:['Todos','Ingresos','Gastos','Pendientes'],chipf:(r,c)=>c=='Ingresos'?r[5][0]=='+':c=='Gastos'?r[5][0]=='−':r[6]=='Pendiente',extra:`<select class="sel" aria-label="Cuenta"><option>Todas las cuentas</option><option>Caja</option><option>BCP ···4021</option></select>`,bulk:['Conciliar','Exportar'],
- cols:[['Fecha',1],['Concepto',2],['Categoría',3],['Cuenta',4],['Importe',5,'num'],['Estado',6]],cell:r=>`<td>${r[1]}</td><td><b style="font-weight:600">${r[2]}</b></td><td>${r[3]}</td><td>${r[4]}</td><td class="num" style="color:${r[5][0]=='−'?'var(--ac)':'inherit'}">${r[5]}</td><td>${bd(r[6],r[6]=='Conciliado'?'ok':'wa')}</td>`})
-:t==2?simple(['Partida','Presupuesto','Ejecutado','Avance'],[["Culto y liturgia","S/ 18 000","S/ 9 340",prog(52,100)+'%'],["Servicios","S/ 9 600","S/ 6 210",prog(65,100)+'%'],["Pastoral y catequesis","S/ 7 200","S/ 3 100",prog(43,100)+'%']])
-:simple(['Cuenta','Banco','Saldo','Última conciliación'],[["Corriente ···4021","BCP","S/ 38 912,40","12/10/2026"],["Ahorros ···7710","Interbank","S/ 64 300,00","30/09/2026"]]));
-
-V.clero=()=>ph('Clero y personal','Nombramientos, licencias y personal laico',`<button class="btn p">${I('plus')}Añadir persona</button>`)+
-table('cle',{k:1,noun:'por nombre o cargo',rows:[["c1","Pbro. Luis Alberto Torres","Párroco","Nombrado 01/03/2022","Vigente"],["c2","P. Andrés Soto, OFM","Vicario parroquial","Nombrado 15/01/2025","Vigente"],["c3","Diác. Ernesto Llosa","Diácono permanente","Licencia hasta 31/12/2026","Por renovar"],["c4","Carmen Ruiz","Secretaria","Contrato indefinido","Vigente"],["c5","Juana Ccori","Coord. de catequesis","Voluntaria","Vigente"],["c6","Hugo Palomino","Sacristán","Contrato a plazo","Por renovar"]],chips:['Todos','Clero','Laicos'],chipf:(r,c)=>c=='Clero'?/^(Pbro|P\.|Diác)/.test(r[1]):!/^(Pbro|P\.|Diác)/.test(r[1]),bulk:['Exportar'],
- cols:[['Nombre',1],['Cargo',2],['Situación',3],['Estado',4]],cell:r=>`<td><b style="font-weight:600">${r[1]}</b></td><td>${r[2]}</td><td>${r[3]}</td><td>${bd(r[4],r[4]=='Vigente'?'ok':'wa')}</td>`});
-
-V.reportes=()=>ph('Reportes','Informes listos para imprimir o enviar a la Curia',`<button class="btn p">${I('plus')}Nuevo reporte</button>`)+
-simple(['Reporte','Periodo','Formato','Última generación',''],[["Estadística sacramental anual","2026","PDF · Excel","01/10/2026",`<button class="btn g">${I('dl')}Descargar</button>`],["Balance mensual","Septiembre 2026","PDF","05/10/2026",`<button class="btn g">${I('dl')}Descargar</button>`],["Anuario diocesano","2026","Excel","—",`<button class="btn g">${I('chart')}Generar</button>`],["Asistencia de catequesis","Trimestre III","PDF","30/09/2026",`<button class="btn g">${I('dl')}Descargar</button>`]]);
-
-const PERM=[["Feligreses","Editar","Editar","Ver","Ver"],["Sacramentos y actas","Firmar","Editar","Ver","—"],["Partidas","Emitir","Emitir","—","—"],["Agenda e intenciones","Editar","Editar","Ver","Ver"],["Catequesis","Ver","Editar","Editar","—"],["Finanzas","Aprobar","Editar","—","Editar"],["Usuarios y roles","Editar","—","—","—"]];
-V.usuarios=t=>ph('Usuarios y roles','6 usuarios activos · 4 roles',`<button class="btn">${I('key')}Nuevo rol</button><button class="btn p">${I('plus')}Invitar usuario</button>`)+tabs('usuarios',['Usuarios','Roles y permisos'],t)+
-(t==0?table('usr',{k:2,noun:'usuarios',rows:[["u1","Pbro. Luis A. Torres","ltorres@sanjose.example","Párroco","Hoy 09:15","Activo"],["u2","Carmen Ruiz","carmen.ruiz@sanjose.example","Secretaría","Ahora","Activo"],["u3","Juana Ccori","jccori@sanjose.example","Catequista","Hoy 08:50","Activo"],["u4","Rubén Salas","rsalas@sanjose.example","Tesorería","Ayer 18:02","Activo"],["u5","P. Andrés Soto","asoto@sanjose.example","Párroco","10/10/2026","Activo"],["u6","Marco Díaz","mdiaz@sanjose.example","Catequista","—","Invitación enviada"]],chips:['Todos','Activos','Invitados'],chipf:(r,c)=>c=='Activos'?r[5]=='Activo':r[5]!='Activo',bulk:['Cambiar rol','Desactivar'],
- cols:[['Nombre',1],['Correo',2],['Rol',3],['Último acceso',4],['Estado',5]],cell:r=>`<td><b style="font-weight:600">${r[1]}</b></td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td>${bd(r[5],r[5]=='Activo'?'ok':'wa')}</td>`})+roles()
-:roles());
-function roles(){return `<div class="pn" style="margin-top:1rem"><div class="pnh"><h3>Permisos por rol</h3><button class="btn">${I('cog')}Editar permisos</button></div><table class="perm"><thead><tr><th>Módulo</th><th style="text-align:center">Párroco</th><th style="text-align:center">Secretaría</th><th style="text-align:center">Catequista</th><th style="text-align:center">Tesorería</th></tr></thead><tbody>${PERM.map(r=>`<tr>${r.map((c,i)=>`<td data-l="${['','Párroco','Secretaría','Catequista','Tesorería'][i]}" class="${i&&c=='—'?'no':''}">${i==0?`<b style="font-weight:600">${c}</b>`:c=='—'?'Sin acceso':c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`}
-
-V.auditoria=()=>ph('Auditoría','Registro inalterable de cambios · se conserva 10 años',`<button class="btn">${I('dl')}Exportar registro</button>`)+
-table('aud',{k:0,noun:'por usuario o acción',total:9412,rows:[["a1","13/10/2026 10:42","Carmen Ruiz","Emitió partida","XII·45·178","192.168.1.20"],["a2","13/10/2026 10:05","Carmen Ruiz","Deshizo registro","Bautismo (borrador)","192.168.1.20"],["a3","13/10/2026 09:15","Pbro. L. Torres","Firmó acta","V·31·122","192.168.1.12"],["a4","13/10/2026 08:50","Juana Ccori","Registró asistencia","Grupo 3","10.0.0.41"],["a5","13/10/2026 08:31","Carmen Ruiz","Registró ingreso","S/ 320,00","192.168.1.20"],["a6","12/10/2026 18:02","Rubén Salas","Concilió movimiento","Luz del Sur","192.168.1.33"],["a7","12/10/2026 17:40","Carmen Ruiz","Editó feligrés","Ana Lucía Pérez","192.168.1.20"]],chips:['Todo','Sacramentos','Finanzas','Accesos'],chipf:(r,c)=>c=='Finanzas'?/ingreso|movimiento/i.test(r[3]):c=='Sacramentos'?/partida|acta|registro/i.test(r[3]):false,bulk:['Exportar'],
- cols:[['Fecha y hora',1],['Usuario',2],['Acción',3],['Objeto',4],['Equipo',5]],cell:r=>`<td style="white-space:nowrap">${r[1]}</td><td><b style="font-weight:600">${r[2]}</b></td><td>${r[3]}</td><td>${r[4]}</td><td style="color:var(--t3)">${r[5]}</td>`});
-
-/* ---------- overlays ---------- */
-function scr(on){$('#scr').classList.toggle('on',on)}
-function cerrar(){['#dr','#md','#pal','aside'].forEach(s=>$(s).classList.remove('on'));scr(false);document.querySelector('.zm').classList.remove('on')}
-function ficha(id){const p=P.find(x=>x[0]==id)||P[0];const dup=p[4]=='Posible duplicado';
- $('#dr').innerHTML=`<div class="drh"><div><h2>${p[1]}</h2><p>${bd(p[4],EST[p[4]])} &nbsp;N.º de registro F-${1000+P.indexOf(p)*37}</p></div><button class="btn g" onclick="cerrar()">${I('x')}Cerrar</button></div>
- <div style="padding:0 1.2rem">${`<div class="tabs" style="margin:0">${['Resumen','Sacramentos','Familia','Historial'].map((x,i)=>`<button class="${i?'':'on'}">${x}</button>`).join('')}</div>`}</div>
- <div class="drb">${dup?`<div class="nt">${I('warn')}<span>Posible duplicado de <b>Sofía V. Quispe R.</b> (registrada 03/2026 en Santa Rosa). <a href="#" style="color:var(--ac)">Revisar y fusionar</a></span></div>`:''}
- <dl><dt>Nacimiento</dt><dd>${p[2]} · Lima</dd><dt>Dirección</dt><dd>${p[3]}</dd><dt>Teléfono</dt><dd>987 111 ${200+P.indexOf(p)}</dd><dt>Familia</dt><dd>${p[6]}</dd><dt>Sector</dt><dd>Sector 2 · Los Pinos</dd></dl>
- <h4>Camino sacramental</h4><div class="tl">
- <div class="ok">Bautismo <small>· 14/06/1987 · Libro VII, f. 12</small><a onclick="partida()">Emitir partida</a></div>
- <div class="${p[5].includes('C')?'ok':''}">Confirmación <small>${p[5].includes('C')?'· 22/10/2004 · Libro III, f. 40':'· pendiente'}</small>${p[5].includes('C')?'':'<a>Inscribir en catequesis</a>'}</div>
- <div class="${p[5].includes('E')?'ok':''}">Primera Comunión <small>${p[5].includes('E')?'· 12/11/1996':'· pendiente'}</small></div>
- <div class="${p[5].includes('M')?'ok':''}">Matrimonio <small>${p[5].includes('M')?'· 15/02/2014 · con Ana Lucía Pérez':'· no registrado'}</small>${p[5].includes('M')?'':'<a>Abrir expediente</a>'}</div></div>
- <h4>Familia</h4><table><tbody><tr><td><b style="font-weight:600">Ana Lucía Pérez Salas</b></td><td>Esposa</td></tr><tr><td><b style="font-weight:600">Mateo Paredes Pérez</b></td><td>Hijo · 9 años</td></tr></tbody></table>
- <h4>Padrinos de bautismo</h4><p style="margin:0;font-size:.92rem">Carlos Vega Ríos · Elena Ruiz Marín</p></div>
- <div class="drf"><button class="btn">${I('doc')}Emitir partida</button><button class="btn p">Editar ficha</button></div>`;
- scr(true);$('#dr').classList.add('on')}
-function partida(){cerrar();$('#md').style.width='52rem';$('#md').innerHTML=`<div class="drh"><div><h2>Partida de bautismo</h2><p>Vista previa · XII·45·178 · PDF</p></div><span style="margin-left:auto;display:flex;gap:.5rem"><button class="btn">${I('dl')}Descargar</button><button class="btn p" onclick="toast('Partida enviada a la impresora',1)">${I('print')}Imprimir</button><button class="btn g" onclick="cerrar()">${I('x')}Cerrar</button></span></div>
- <div class="drb" style="background:var(--sb)"><div class="paper"><div class="c" style="letter-spacing:.2em;text-transform:uppercase">Diócesis de San Ejemplo</div><div class="c">Parroquia San José · Jr. Lima 100</div><h2>PARTIDA DE BAUTISMO</h2><div class="c">Libro XII · Folio 45 · Número 178</div><hr style="border:0;border-top:1px solid var(--ln);margin:1rem 0">
- <p>El suscrito Párroco certifica que en el libro de bautismos de esta parroquia consta que <b>Sofía Valentina Quispe Rojas</b>, nacida en Lima el 2 de marzo de 2026, hija de don Juan Quispe Mamani y de doña María Rojas Flores, recibió el santo bautismo el 14 de junio de 2026 de manos del Pbro. Luis Alberto Torres. Padrinos: don Carlos Rojas Flores y doña Ana Lucía Pérez.</p>
- <p><i>Notas marginales:</i> ninguna. &nbsp; San Ejemplo, 13 de octubre de 2026.</p><p style="margin-top:2rem">Pbro. Luis Alberto Torres<br><small>Párroco</small></p>
- <div class="seal">PARROQUIA<br>SAN JOSÉ<br>✝</div><small style="font-family:var(--sans);color:var(--t3)">Código de verificación SJ-2026-178-7F3A</small></div></div>`;scr(true);$('#md').classList.add('on')}
-/* wizards */
-let W,wi;
-const WB={t:'Registrar bautizo',save:'Bautizo registrado en el libro XII, folio 47, n.º 183',steps:[
- ['Bautizado','Datos de quien recibe el bautismo.',`<label class="fld"><span>Nombres</span><input value="Emma Lucía"></label><div class="r2"><label class="fld"><span>Apellido paterno</span><input value="Ríos"></label><label class="fld"><span>Apellido materno</span><input value="Calle"></label></div><div class="r2"><label class="fld"><span>Fecha de nacimiento</span><input value="18/03/2026"></label><label class="fld"><span>Lugar de nacimiento</span><input value="Lima"></label></div><div class="hint">Se buscó en el registro: no existen personas con este nombre.</div>`],
- ['Padres','Padre y madre, tal como figuran en el DNI.',`<label class="fld"><span>Padre</span><input value="Óscar Ríos Medina"></label><label class="fld"><span>Madre</span><input value="Patricia Calle Soto"></label><label class="fld"><span>Estado del matrimonio de los padres</span><select><option>Casados por la Iglesia</option><option>Casados civilmente</option><option>No casados</option></select></label>`],
- ['Padrinos','Deben estar confirmados.',`<label class="fld"><span>Padrino</span><input value="Raúl Calle Soto"></label><label class="fld"><span>Madrina</span><input value="Lucía Fernández Ortiz"></label><div class="hint">${bd('Confirmada · V·31·122','ok')} Lucía Fernández figura en el registro.</div>`],
- ['Celebración','Fecha, celebrante y ubicación en el libro.',`<div class="r2"><label class="fld"><span>Fecha</span><input value="13/10/2026"></label><label class="fld"><span>Hora</span><input value="18:30"></label></div><label class="fld"><span>Celebrante</span><select><option>Pbro. Luis Alberto Torres</option><option>P. Andrés Soto</option></select></label><div class="r2"><label class="fld"><span>Libro · folio</span><input value="XII · 47"></label><label class="fld"><span>Número</span><input value="183"></label></div>`],
- ['Revisar','Compruebe los datos antes de inscribir.',`<dl><dt>Bautizada</dt><dd>Emma Lucía Ríos Calle · 18/03/2026</dd><dt>Padres</dt><dd>Óscar Ríos Medina · Patricia Calle Soto</dd><dt>Padrinos</dt><dd>Raúl Calle Soto · Lucía Fernández Ortiz</dd><dt>Celebración</dt><dd>13/10/2026, 18:30 · Pbro. L. Torres</dd><dt>Libro</dt><dd>XII · folio 47 · n.º 183</dd></dl>`]]};
-const WI={t:'Nueva intención de misa',save:'Intención registrada · recibo n.º 2041',steps:[
- ['Intención','¿Por quién o por qué se ofrece?',`<label class="fld"><span>Tipo</span><select><option>Difunto</option><option>Salud</option><option>Acción de gracias</option></select></label><label class="fld"><span>Texto de la intención</span><input value="Por el eterno descanso de Elena Ortiz"></label>`],
- ['Misa','Elija la misa.',`<label class="fld"><span>Misa</span><select><option>Miércoles 14 · 19:00 · Templo principal (4 intenciones)</option><option>Jueves 15 · 07:00</option></select></label>`],
- ['Solicitante','Para el recibo.',`<label class="fld"><span>Nombre</span><input value="Pedro Salazar Núñez"></label><label class="fld"><span>Teléfono</span><input value="987 111 209"></label>`],
- ['Ofrenda','Estipendio y forma de pago.',`<div class="r2"><label class="fld"><span>Importe</span><input value="S/ 20,00"></label><label class="fld"><span>Pago</span><select><option>Efectivo</option><option>Yape</option></select></label></div>`]]};
-function bautizo(){W=WB;wi=0;wz()}function intencion(){W=WI;wi=0;wz()}
-function wz(){cerrar();const s=W.steps,last=wi==s.length-1;$('#md').style.width='';$('#md').innerHTML=`<div class="drh"><div><h2>${W.t}</h2><p>Paso ${wi+1} de ${s.length} · los datos se guardan como borrador</p></div><button class="btn g" onclick="cerrar()">${I('x')}Cerrar</button></div>
- <div class="wz"><div class="wzs">${s.map((x,i)=>`<div class="${i==wi?'on':i<wi?'dn':''}"><i>${i<wi?'✓':i+1}</i>${x[0]}</div>`).join('')}</div><div class="wzb"><h3>${s[wi][0]}</h3><p>${s[wi][1]}</p>${s[wi][2]}</div></div>
- <div class="drf"><button class="btn" style="margin-right:auto" ${wi?'':'disabled'} onclick="wi--;wz()">${I('left')}Atrás</button><button class="btn" onclick="cerrar()">Cancelar</button><button class="btn p" onclick="${last?'conf()':'wi++;wz()'}">${last?'Inscribir en el libro':'Continuar'}${last?'':I('right')}</button></div>`;scr(true);$('#md').classList.add('on')}
-function conf(){$('#md').innerHTML=`<div class="drh"><div><h2>¿Inscribir este registro?</h2><p>${W===WB?'Se creará el acta XII·47·183 y quedará pendiente de firma del párroco.':'Se asignará a la misa y se emitirá el recibo.'}</p></div></div>
- <div class="drb" style="font-size:.92rem;color:var(--t2)">Podrá deshacerlo durante los próximos 10 segundos. Después, cualquier corrección quedará como nota marginal.</div>
- <div class="drf"><button class="btn" onclick="wz()">Volver a revisar</button><button class="btn p" onclick="cerrar();toast('${W.save}',1)">Sí, inscribir</button></div>`;$('#md').style.width='30rem'}
-let tt;function toast(m,u){const t=$('#toast');t.innerHTML=`${I('right')}<span>${m}</span>${u?`<button class="btn" onclick="toast('Acción deshecha')">Deshacer</button>`:''}`;t.classList.add('on');clearTimeout(tt);if(!window.KEEP)tt=setTimeout(()=>t.classList.remove('on'),8000)}
-function pal(){cerrar();$('#pal').innerHTML=`<div style="display:flex;align-items:center;border-bottom:1px solid var(--ln)"><input id="pq" style="border:0" placeholder="Buscar personas, actas, acciones…" oninput="palr()" aria-label="Buscar"><button class="btn g" style="margin-right:.5rem" onclick="cerrar()">${I('x')}Cerrar</button></div><div id="pr"></div><div style="border-top:1px solid var(--ln);padding:.5rem 1rem;font-size:.8rem;color:var(--t3)">Enter para abrir · Esc para cerrar</div>`;scr(true);$('#pal').classList.add('on');palr();$('#pq').focus()}
-function palr(){const q=($('#pq').value||'').toLowerCase();const pp=P.filter(p=>p[1].toLowerCase().includes(q)).slice(0,4);const ac=[["Registrar bautizo","bautizo()","plus"],["Nueva intención","intencion()","cand"],["Emitir partida","partida()","doc"],["Ir a Finanzas","go('finanzas')","coin"]].filter(a=>a[0].toLowerCase().includes(q)||!q);
- $('#pr').innerHTML=(pp.length?`<div class="gt">Personas</div>`+pp.map((p,i)=>`<div class="it ${i?'':'on'}" onclick="ficha('${p[0]}')">${I('users')}${p[1]}<small>${p[2]}</small></div>`).join(''):'')+(ac.length?`<div class="gt">Acciones</div>`+ac.map(a=>`<div class="it" onclick="${a[1]}">${I(a[2])}${a[0]}</div>`).join(''):'')}
-function ayuda(){$('#dr').innerHTML=`<div class="drh"><div><h2>Ayuda</h2><p>${LBL[cur][0]}</p></div><button class="btn g" onclick="cerrar()">${I('x')}Cerrar</button></div><div class="drb" style="font-size:.95rem">
- <h4>En esta pantalla</h4><p>Use los filtros de la parte superior de cada tabla y haga clic en una fila para ver el detalle a la derecha. Marque varias filas para actuar sobre todas a la vez.</p>
- <h4>Atajos</h4><dl><dt><kbd>Ctrl K</kbd></dt><dd>Buscar en todo</dd><dt><kbd>Esc</kbd></dt><dd>Cerrar paneles</dd><dt><kbd>Enter</kbd></dt><dd>Continuar en asistentes</dd></dl>
- <h4>Tamaño del texto</h4><p>Pulse <b>Aa</b> en la barra superior para elegir entre 75 % y 150 %. Se recuerda en este equipo.</p>
- <h4>¿Se equivocó?</h4><p>Tras guardar aparece <b>Deshacer</b> durante unos segundos. Todas las acciones quedan en Auditoría.</p>
- <p style="margin-top:1.4rem"><b>Soporte parroquial:</b> 01 555 0100 · lunes a viernes, 9:00–17:00</p></div>`;scr(true);$('#dr').classList.add('on')}
-function zoom(z){document.documentElement.style.fontSize=17*z/100+'px';document.body.dataset.z=z;$('#zl').textContent=z+'%';localStorage.zoom6=z;$('#zb').innerHTML=[75,100,125,150].map(v=>`<button class="${v==z?'on':''}" onclick="zoom(${v})"><span>${v==100?'Normal':v<100?'Pequeño':v==125?'Grande':'Muy grande'}</span><span>${v}%</span></button>`).join('')}
-zoom(+localStorage.zoom6||100);
-document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key=='k'){e.preventDefault();if($('#app').classList.contains('on'))pal()}if(e.key=='Escape')cerrar();if(e.key=='Enter'&&$('#md').classList.contains('on')&&W&&e.target.tagName!='BUTTON'){e.preventDefault();$('#md .drf .btn.p').click()}});
-</script></body></html>
+<div id="scr" onclick="cerrar()"></div><div class="dr" id="dr" role="dialog" aria-modal="true"></div><div class="md" id="md" role="dialog" aria-modal="true"></div><div class="md" id="md2" role="alertdialog" aria-modal="true" style="z-index:34"></div><div class="pal" id="pal"></div><div id="toast" role="status" aria-live="polite"></div>
+<script src="core.js"></script><script src="mod1.js"></script><script src="mod2.js"></script><script src="mod3.js"></script><script src="mod4.js"></script>
+</body></html>
