@@ -1,0 +1,126 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><title>Sistema de Gestión Parroquial — Diócesis de San Ejemplo</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{--navy:#14284b;--navy2:#1d3a6b;--gold:#c9a24a;--gold2:#f3e7c7;--bg:#f4f6fa;--tx:#1f2937;--mu:#6b7280;--bd:#e3e7ee}
+*{box-sizing:border-box}body{margin:0;font-family:"Segoe UI",system-ui,Arial,sans-serif;background:var(--bg);color:var(--tx);font-size:14px}
+#login{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--navy),var(--navy2))}
+.lcard{background:#fff;width:380px;padding:34px;border-radius:14px;box-shadow:0 20px 50px #0005;border-top:5px solid var(--gold)}
+.lcard h1{margin:6px 0 2px;color:var(--navy);font-size:21px;text-align:center}.lcard p{text-align:center;color:var(--mu);margin:0 0 20px}
+.cross{text-align:center;font-size:34px;color:var(--gold)}
+label{display:block;font-size:12px;color:var(--mu);margin:12px 0 4px;font-weight:600}
+input,select{width:100%;padding:9px 11px;border:1px solid var(--bd);border-radius:8px;font:inherit;background:#fff}
+.btn{display:inline-block;background:var(--navy);color:#fff;border:0;padding:9px 16px;border-radius:8px;font:inherit;font-weight:600;cursor:pointer}
+.btn.gold{background:var(--gold);color:var(--navy)}.btn.out{background:#fff;color:var(--navy);border:1px solid var(--bd)}.btn.sm{padding:5px 10px;font-size:12px}
+.lcard .btn{width:100%;margin-top:20px;padding:11px}
+#app{display:none;height:100vh}
+aside{position:fixed;left:0;top:0;bottom:0;width:236px;background:var(--navy);color:#cfd8e8;overflow:auto}
+.brand{padding:18px;border-bottom:1px solid #ffffff1a;display:flex;gap:10px;align-items:center}.brand b{color:#fff;display:block}.brand small{color:var(--gold)}
+.brand .lg{width:38px;height:38px;border-radius:9px;background:var(--gold);color:var(--navy);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700}
+nav a{display:flex;gap:10px;padding:10px 20px;color:#cfd8e8;text-decoration:none;cursor:pointer;border-left:3px solid transparent}
+nav a:hover{background:#ffffff0d}nav a.on{background:#ffffff14;color:#fff;border-left-color:var(--gold)}
+nav .sec{padding:14px 20px 4px;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#8899b8}
+header{position:fixed;left:236px;right:0;top:0;height:60px;background:#fff;border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 24px;gap:14px;z-index:5}
+header select{width:300px}header .sp{flex:1}.user{display:flex;align-items:center;gap:9px}
+.av{width:34px;height:34px;border-radius:50%;background:var(--gold2);color:var(--navy);display:flex;align-items:center;justify-content:center;font-weight:700}
+main{margin-left:236px;padding:84px 26px 30px}
+h2{margin:0 0 4px;color:var(--navy);font-size:22px}.sub{color:var(--mu);margin-bottom:18px}
+.g{display:grid;gap:16px}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:1fr 1fr}.g21{grid-template-columns:2fr 1fr}
+.card{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:16px}
+.card h3{margin:0 0 12px;font-size:15px;color:var(--navy)}
+.kpi .n{font-size:26px;font-weight:700;color:var(--navy)}.kpi .l{color:var(--mu);font-size:12px}.kpi .d{font-size:12px;color:#16a34a;margin-top:4px}
+.kpi{border-left:4px solid var(--gold)}
+table{width:100%;border-collapse:collapse}th{text-align:left;font-size:11px;text-transform:uppercase;color:var(--mu);padding:8px;border-bottom:2px solid var(--bd);background:#fafbfd}
+td{padding:8px;border-bottom:1px solid var(--bd)}tr.cl{cursor:pointer}tr.cl:hover td{background:#f7f9fd}
+.tag{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#e8eefb;color:var(--navy2)}
+.tag.ok{background:#dcfce7;color:#166534}.tag.w{background:#fef3c7;color:#92400e}.tag.r{background:#fee2e2;color:#991b1b}
+.tabs{display:flex;gap:4px;border-bottom:2px solid var(--bd);margin-bottom:14px}.tabs span{padding:9px 16px;cursor:pointer;color:var(--mu);font-weight:600;border-bottom:3px solid transparent;margin-bottom:-2px}
+.tabs span.on{color:var(--navy);border-color:var(--gold)}
+.bar{display:flex;gap:10px;align-items:center;margin-bottom:12px}.bar input{max-width:280px}
+.view{display:none}.view.on{display:block}
+.cert{border:6px double var(--gold);padding:26px 34px;background:#fffdf6;font-family:Georgia,serif;text-align:center}
+.cert h4{font-size:20px;color:var(--navy);margin:6px 0;letter-spacing:2px}.cert p{line-height:1.7;margin:6px 0}
+.cal{display:grid;grid-template-columns:60px repeat(7,1fr);font-size:12px}.cal div{border:1px solid var(--bd);min-height:36px;padding:3px}
+.cal .h{background:var(--navy);color:#fff;text-align:center;font-weight:600}.ev{background:var(--gold2);border-left:3px solid var(--gold);border-radius:4px;padding:2px 4px;margin:1px 0}
+.ev.b{background:#e0e8f7;border-color:var(--navy2)}
+.dl{display:grid;grid-template-columns:130px 1fr;gap:6px;font-size:13px}.dl b{color:var(--mu);font-weight:600}
+.chk{color:#16a34a;font-weight:700;text-align:center}.x{color:#d1d5db;text-align:center}
+.hb{display:flex;align-items:center;gap:8px;margin:7px 0;font-size:12px}.hb .t{width:150px}.hb .b{height:14px;background:var(--navy2);border-radius:3px}.hb .b.g{background:var(--gold)}
+.modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;z-index:20}.modal.on{display:flex}
+.modal .card{width:640px}
+</style></head><body>
+<div id="login"><div class="lcard"><div class="cross">✝</div><h1>Gestión Parroquial</h1><p>Diócesis de San Ejemplo</p>
+<label>Usuario</label><input value="m.garcia">
+<label>Contraseña</label><input type="password" value="••••••••">
+<label>Rol</label><select id="rol"><option>Obispo / Curia</option><option>Párroco</option><option>Secretaria parroquial</option><option>Catequista</option></select>
+<button class="btn" onclick="entrar()">Ingresar</button><p style="margin-top:14px;font-size:12px">¿Olvidó su contraseña? · Maqueta no funcional</p></div></div>
+<div id="app">
+<aside><div class="brand"><div class="lg">✝</div><div><b>SIGEPA</b><small>Diócesis de San Ejemplo</small></div></div>
+<nav id="nav"></nav></aside>
+<header><select id="parr"><option>🏛 Toda la diócesis (vista curia)</option><option>Parroquia San José — Centro</option><option>Parroquia Nuestra Sra. del Carmen</option><option>Parroquia Santa Rosa de Lima</option><option>Parroquia San Martín de Porres</option><option>Parroquia Cristo Rey</option></select>
+<div class="sp"></div><span style="color:var(--mu)">🔔 3</span><div class="user"><div class="av">MG</div><div><b>Mons. Manuel García</b><br><small id="rolt" style="color:var(--mu)">Obispo / Curia</small></div></div></header>
+<main id="main"></main></div>
+<div class="modal" id="mod" onclick="if(event.target==this)this.classList.remove('on')"><div class="card">
+<div class="cert"><div style="font-size:28px;color:var(--gold)">✝</div><small>DIÓCESIS DE SAN EJEMPLO · PARROQUIA SAN JOSÉ</small><h4>PARTIDA DE BAUTISMO</h4>
+<p>Libro <b>XII</b> · Folio <b>45</b> · Partida <b>178</b></p>
+<p>El suscrito Párroco certifica que en el libro de bautismos de esta parroquia consta que<br><b style="font-size:17px">SOFÍA VALENTINA QUISPE ROJAS</b><br>
+nacida el 02 de marzo de 2026, hija de Juan Quispe Mamani y María Rojas Flores,<br>fue bautizada el 14 de junio de 2026 por el Pbro. Luis Alberto Torres.<br>Padrinos: Carlos Rojas Flores y Ana Lucía Pérez.</p>
+<p style="margin-top:22px">San Ejemplo, 13 de octubre de 2026</p><p style="margin-top:28px">______________________<br>Pbro. Luis Alberto Torres · Párroco</p></div>
+<div style="text-align:right;margin-top:12px"><button class="btn out" onclick="mod.classList.remove('on')">Cerrar</button> <button class="btn gold">🖨 Imprimir / PDF</button></div></div></div>
+<script>
+const V=[["dash","📊","Dashboard","General"],["fel","👪","Feligreses","Pastoral"],["sac","🕊","Sacramentos"],["agenda","📅","Misas e intenciones"],["cat","📖","Catequesis"],["fin","💰","Finanzas","Administración"],["clero","⛪","Clero y personal"],["rep","📈","Reportes"],["conf","⚙","Configuración y roles","Sistema"]];
+const T=(h,r,cl)=>`<table><tr>${h.map(x=>`<th>${x}</th>`).join("")}</tr>${r.map(x=>`<tr ${cl?'class="cl" onclick="'+cl+'"':''}>${x.map(y=>`<td>${y}</td>`).join("")}</tr>`).join("")}</table>`;
+const K=(n,l,d)=>`<div class="card kpi"><div class="l">${l}</div><div class="n">${n}</div><div class="d">${d||""}</div></div>`;
+const tg=(t,c="")=>`<span class="tag ${c}">${t}</span>`;
+const tabs=(id,a)=>`<div class="tabs">${a.map((x,i)=>`<span class="${i?'':'on'}" onclick="tab(this,'${id}',${i})">${x}</span>`).join("")}</div>`;
+function tab(el,id,i){el.parentNode.querySelectorAll("span").forEach((s,j)=>s.classList.toggle("on",j==i));document.querySelectorAll(`[data-t=${id}]`).forEach((p,j)=>p.style.display=j==i?"block":"none")}
+const P=(id,i,h)=>`<div data-t="${id}" style="display:${i?'none':'block'}">${h}</div>`;
+const meses=["May","Jun","Jul","Ago","Sep","Oct"],ing=[38,42,40,51,47,55],egr=[30,33,35,38,36,40];
+function chart(){let s='<svg viewBox="0 0 520 210" width="100%"><g font-size="11" fill="#6b7280">';for(let i=0;i<=4;i++){let y=180-i*40;s+=`<line x1="40" x2="510" y1="${y}" y2="${y}" stroke="#eef"/><text x="5" y="${y+4}">S/${i*15}k</text>`}
+meses.forEach((m,i)=>{let x=60+i*77;s+=`<rect x="${x}" y="${180-ing[i]*2.66}" width="26" height="${ing[i]*2.66}" fill="#1d3a6b" rx="3"/><rect x="${x+28}" y="${180-egr[i]*2.66}" width="26" height="${egr[i]*2.66}" fill="#c9a24a" rx="3"/><text x="${x+14}" y="198">${m}</text>`});
+return s+'</g></svg><div style="font-size:12px;color:var(--mu)">■ <span style="color:#1d3a6b">Ingresos</span> &nbsp; ■ <span style="color:#c9a24a">Egresos</span> (miles S/)</div>'}
+const H={
+dash:()=>`<h2>Dashboard diocesano</h2><div class="sub">Resumen general · Octubre 2026</div>
+<div class="g g4">${K("42","Parroquias activas","+1 cuasiparroquia")}${K("186.420","Feligreses registrados","▲ 2,1% vs. año anterior")}${K("1.284","Sacramentos del mes","▲ 8% vs. septiembre")}${K("S/ 552.300","Ingresos del mes (diócesis)","▲ 12% vs. septiembre")}</div>
+<div class="g g21" style="margin-top:16px"><div class="card"><h3>Finanzas diocesanas — últimos 6 meses</h3>${chart()}</div>
+<div class="card"><h3>Sacramentos de octubre</h3>${[["Bautizos",612,100],["Confirmaciones",318,52],["Matrimonios",146,24],["Primeras comuniones",142,23],["Defunciones",66,11]].map(x=>`<div class="hb"><span class="t">${x[0]}</span><div class="b ${x[1]<200?'g':''}" style="width:${x[2]}%"></div><b>${x[1]}</b></div>`).join("")}</div></div>
+<div class="g g2" style="margin-top:16px"><div class="card"><h3>Parroquias — estado de reportes</h3>${T(["Parroquia","Vicaría","Párroco","Reporte sep."],[["San José","Centro","Pbro. L. Torres",tg("Recibido","ok")],["Ntra. Sra. del Carmen","Norte","Pbro. J. Ramírez",tg("Recibido","ok")],["Santa Rosa de Lima","Sur","Pbro. A. Vargas",tg("Pendiente","w")],["San Martín de Porres","Este","Pbro. R. Díaz",tg("Atrasado","r")],["Cristo Rey","Centro","Pbro. F. Medina",tg("Recibido","ok")]])}</div>
+<div class="card"><h3>Avisos recientes</h3>${T(["Fecha","Aviso"],[["12/10","Visita pastoral a Parroquia Cristo Rey — 20/10"],["10/10","Confirmaciones diocesanas en Catedral — 08/11"],["08/10","Vence plazo de reportes del 3er trimestre — 31/10"],["05/10","Retiro del clero — 26 al 28/10"],["01/10","Nuevo arancel diocesano vigente"]])}</div></div>`,
+fel:()=>`<h2>Feligreses y fichas familiares</h2><div class="sub">Parroquia San José — 4.312 familias · 14.870 feligreses</div>
+<div class="g g21"><div class="card"><div class="bar"><input placeholder="🔍 Buscar por nombre, DNI o familia…"><select style="width:160px"><option>Todos los sectores</option></select><div class="sp" style="flex:1"></div><button class="btn">+ Nueva ficha</button></div>
+${T(["Familia","Jefe de familia","Sector","Miembros","Sacramentos","Estado"],[["Quispe Rojas","Juan Quispe Mamani","Sector 3",5,"Al día",tg("Activa","ok")],["Fernández López","Rosa López Silva","Sector 1",4,"Falta confirm.",tg("Activa","ok")],["Huamán Cárdenas","Pedro Huamán","Sector 2",6,"Al día",tg("Activa","ok")],["Torres Benítez","Elena Benítez","Sector 4",3,"Matrimonio pend.",tg("Seguimiento","w")],["Mendoza Ríos","Luis Mendoza","Sector 1",2,"Al día",tg("Activa","ok")],["Salazar Cruz","Carmen Cruz","Sector 5",4,"Bautizo pend.",tg("Seguimiento","w")],["Paredes Gómez","Jorge Paredes","Sector 2",5,"Al día",tg("Trasladada","r")],["Castillo Vega","Ana Vega","Sector 3",3,"Al día",tg("Activa","ok")]],"")}</div>
+<div class="card"><h3>Ficha familiar · Quispe Rojas</h3><div class="dl"><b>Código</b><span>FAM-SJ-00178</span><b>Dirección</b><span>Jr. Las Flores 245, Sector 3</span><b>Teléfono</b><span>987 654 321</span><b>Matrimonio</b><span>Religioso · 2015 · L.VIII F.12</span></div>
+<h3 style="margin-top:16px">Miembros</h3>${T(["Nombre","Rol","Sacramentos"],[["Juan Quispe","Padre","B · C · M"],["María Rojas","Madre","B · C · M"],["Diego Quispe","Hijo, 14","B · PC"],["Lucía Quispe","Hija, 9","B"],["Sofía Quispe","Hija, 0","B (2026)"]])}
+<div style="margin-top:12px"><button class="btn sm">Editar</button> <button class="btn out sm">Historial</button></div></div></div>`,
+sac:()=>{const tb=["Bautizo","Confirmación","Matrimonio","Defunción"],rows=[[["XII","45","178","Sofía Valentina Quispe Rojas","14/06/2026","Pbro. L. Torres"],["XII","45","179","Mateo Huamán Cárdenas","14/06/2026","Pbro. L. Torres"],["XII","46","180","Camila Salazar Cruz","21/06/2026","P. Andrés Soto"],["XII","46","181","Thiago Mendoza Paz","05/07/2026","Pbro. L. Torres"],["XII","47","182","Valeria Castillo Vega","12/07/2026","P. Andrés Soto"]],[["V","88","412","Diego Quispe Rojas","15/08/2026","Mons. M. García"],["V","88","413","Andrea Fernández López","15/08/2026","Mons. M. García"],["V","89","414","Bruno Paredes Gómez","15/08/2026","Mons. M. García"]],[["VIII","12","56","Carlos Rojas y Ana Pérez","20/09/2026","Pbro. L. Torres"],["VIII","13","57","Luis Vega y Rosa Cruz","27/09/2026","P. Andrés Soto"]],[["IV","30","233","Eusebio Paredes Luna","03/10/2026","P. Andrés Soto"],["IV","30","234","Teresa Gómez Ruiz","08/10/2026","Pbro. L. Torres"]]];
+return `<h2>Sacramentos</h2><div class="sub">Libros sacramentales · Parroquia San José</div><div class="g g4" style="margin-bottom:16px">${K("XII","Libro de bautismos vigente","Folio 47 de 200")}${K("V","Libro de confirmaciones","Folio 89 de 200")}${K("VIII","Libro de matrimonios","Folio 13 de 150")}${K("IV","Libro de defunciones","Folio 30 de 200")}</div>
+<div class="card">${tabs("sa",tb)}${rows.map((r,i)=>P("sa",i,`<div class="bar"><input placeholder="🔍 Buscar en libro de ${tb[i].toLowerCase()}…"><div style="flex:1"></div><button class="btn out">+ Registrar ${tb[i].toLowerCase()}</button></div>`+T(["Libro","Folio","Partida",i==2?"Contrayentes":"Nombre","Fecha","Ministro","Acción"],r.map(x=>[...x,'<button class="btn gold sm" onclick="mod.classList.add(\'on\')">Emitir partida</button>'])))).join("")}</div>`},
+agenda:()=>{const d=["Lun 12","Mar 13","Mié 14","Jue 15","Vie 16","Sáb 17","Dom 18"],hs=["07:00","09:00","12:00","17:00","19:00"],ev={"07:00":[0,1,2,3,4,5,6],"09:00":[6],"12:00":[6],"19:00":[0,2,4,5,6],"17:00":[5]};
+let c='<div class="cal"><div class="h"></div>'+d.map(x=>`<div class="h">${x}</div>`).join("");hs.forEach(h=>{c+=`<div><b>${h}</b></div>`;d.forEach((x,i)=>{let e=(ev[h]||[]).includes(i);c+=`<div>${e?`<div class="ev ${h=="17:00"?"b":""}">${h=="17:00"?"Matrimonio":i==6&&h=="12:00"?"Misa solemne":"Misa"}<br><small>${i%2?"P. Soto":"P. Torres"}</small></div>`:""}</div>`})});c+="</div>";
+return `<h2>Agenda de misas e intenciones</h2><div class="sub">Semana del 12 al 18 de octubre de 2026</div><div class="g g21"><div class="card"><div class="bar"><button class="btn out sm">◀</button><b>Octubre 2026</b><button class="btn out sm">▶</button><div style="flex:1"></div><button class="btn sm">+ Nueva celebración</button></div>${c}</div>
+<div class="card"><h3>Intenciones — Dom 18, 09:00</h3>${T(["Intención","Solicita","Estipendio"],[["† Eusebio Paredes (difunto)","Fam. Paredes","S/ 20"],["Salud de Rosa López","Fam. Fernández","S/ 20"],["Acción de gracias aniv. bodas","Luis Mendoza","S/ 20"],["† Teresa Gómez (mes)","Fam. Gómez","S/ 20"],["Por las almas del purgatorio","Anónimo","S/ 10"]])}<button class="btn gold" style="margin-top:12px;width:100%">+ Registrar intención</button></div></div>`},
+cat:()=>`<h2>Catequesis</h2><div class="sub">Ciclo 2026 · Parroquia San José</div><div class="g g4" style="margin-bottom:16px">${K("14","Grupos activos")}${K("22","Catequistas")}${K("268","Catequizandos inscritos","▲ 18 nuevos")}${K("91%","Asistencia promedio")}</div>
+<div class="card">${tabs("ca",["Grupos","Catequistas","Inscripciones"])}
+${P("ca",0,T(["Grupo","Etapa","Catequista","Horario","Inscritos","Estado"],[["San Juan Bosco","Primera Comunión I","Lucía Herrera","Sáb 09:00",22,tg("En curso","ok")],["Santa Teresita","Primera Comunión II","Martha Ruiz","Sáb 10:30",19,tg("En curso","ok")],["San Pablo","Confirmación I","Javier Ortiz","Vie 18:00",25,tg("En curso","ok")],["Santa María","Confirmación II","Patricia León","Dom 16:00",21,tg("Retiro pendiente","w")],["Emaús","Adultos","Diác. Raúl Peña","Mié 19:30",12,tg("En curso","ok")]]))}
+${P("ca",1,T(["Nombre","Grupo","Formación","Teléfono"],[["Lucía Herrera","San Juan Bosco","Escuela diocesana II","945 111 222"],["Martha Ruiz","Santa Teresita","Escuela diocesana III","945 333 444"],["Javier Ortiz","San Pablo","Escuela diocesana I","945 555 666"],["Patricia León","Santa María","Lic. Teología","945 777 888"]]))}
+${P("ca",2,T(["Fecha","Catequizando","Etapa","Documentos","Estado"],[["10/10/2026","Diego Quispe Rojas","Confirmación I","Partida bautismo ✓",tg("Aprobada","ok")],["09/10/2026","Lucía Quispe Rojas","Primera Comunión I","Falta partida",tg("Pendiente","w")]]))}</div>`,
+fin:()=>`<h2>Finanzas</h2><div class="sub">Parroquia San José · Octubre 2026</div><div class="g g4" style="margin-bottom:16px">${K("S/ 18.450","Ofrendas (colectas)")}${K("S/ 9.320","Diezmos","412 diezmistas")}${K("S/ 6.780","Aranceles")}${K("S/ 3.455","Aporte a la diócesis (10%)","Vence 31/10")}</div>
+<div class="card">${tabs("fi",["Ofrendas","Diezmos","Aranceles","Reportes a la diócesis"])}
+${P("fi",0,T(["Fecha","Celebración","Monto","Contado por","Estado"],[["11/10","Domingo XXVIII — todas las misas","S/ 4.320","Comisión económica",tg("Depositado","ok")],["04/10","Domingo XXVII","S/ 4.105","Comisión económica",tg("Depositado","ok")],["07/10","Colecta Domund","S/ 1.250","Secretaría",tg("Por remitir","w")]]))}
+${P("fi",1,T(["Diezmista","Familia","Modalidad","Último aporte","Monto"],[["Juan Quispe","Quispe Rojas","Mensual","05/10","S/ 50"],["Rosa López","Fernández López","Mensual","03/10","S/ 40"]]))}
+${P("fi",2,T(["Concepto","Arancel diocesano","Cobrados (mes)","Total"],[["Partida / certificado","S/ 15",86,"S/ 1.290"],["Bautizo","S/ 40",52,"S/ 2.080"],["Matrimonio","S/ 250",8,"S/ 2.000"],["Misa de difuntos","S/ 20",70,"S/ 1.400"]]))}
+${P("fi",3,T(["Periodo","Ingresos","Egresos","Aporte","Estado"],[["Septiembre 2026","S/ 41.200","S/ 32.900","S/ 4.120",tg("Enviado","ok")],["Agosto 2026","S/ 39.800","S/ 31.100","S/ 3.980",tg("Aprobado","ok")],["Octubre 2026","—","—","—",tg("Borrador","w")]])+'<button class="btn" style="margin-top:12px">Generar y enviar reporte</button>')}</div>`,
+clero:()=>`<h2>Clero y personal</h2><div class="sub">Diócesis de San Ejemplo · 68 sacerdotes · 12 diáconos · 94 laicos</div><div class="card"><div class="bar"><input placeholder="🔍 Buscar…"><div style="flex:1"></div><button class="btn">+ Registrar</button></div>
+${T(["Nombre","Cargo","Destino","Ordenación","Contacto","Estado"],[["Mons. Manuel García","Obispo diocesano","Curia / Catedral","1990","obispo@diocesis.example",tg("Activo","ok")],["Pbro. Luis Alberto Torres","Párroco","San José","2005","ltorres@diocesis.example",tg("Activo","ok")],["P. Andrés Soto","Vicario parroquial","San José","2019","asoto@diocesis.example",tg("Activo","ok")],["Pbro. Jorge Ramírez","Párroco · Vicario foráneo","Ntra. Sra. del Carmen","1998","jramirez@diocesis.example",tg("Activo","ok")],["Pbro. Alberto Vargas","Párroco","Santa Rosa de Lima","2010","avargas@diocesis.example",tg("Licencia","w")],["Diác. Raúl Peña","Diácono permanente","San José","2021","rpena@diocesis.example",tg("Activo","ok")],["Sra. Carmen Ulloa","Secretaria parroquial","San José","—","cullloa@diocesis.example",tg("Activo","ok")],["Sr. Óscar Lima","Contador","Curia","—","olima@diocesis.example",tg("Activo","ok")]])}</div>`,
+rep:()=>`<h2>Reportes y estadísticas</h2><div class="sub">Año pastoral 2026</div><div class="g g3"><div class="card"><h3>Sacramentos por vicaría</h3>${[["Centro",100],["Norte",82],["Sur",64],["Este",55],["Oeste",41]].map(x=>`<div class="hb"><span class="t">Vicaría ${x[0]}</span><div class="b" style="width:${x[1]*0.6}%"></div><b>${x[1]*42}</b></div>`).join("")}</div>
+<div class="card"><h3>Distribución de ingresos</h3><svg viewBox="0 0 42 42" width="150" style="display:block;margin:auto"><circle r="15.9" cx="21" cy="21" fill="none" stroke="#1d3a6b" stroke-width="7" stroke-dasharray="48 52" stroke-dashoffset="25"/><circle r="15.9" cx="21" cy="21" fill="none" stroke="#c9a24a" stroke-width="7" stroke-dasharray="24 76" stroke-dashoffset="-23"/><circle r="15.9" cx="21" cy="21" fill="none" stroke="#94a3b8" stroke-width="7" stroke-dasharray="18 82" stroke-dashoffset="-47"/><circle r="15.9" cx="21" cy="21" fill="none" stroke="#e5d3a0" stroke-width="7" stroke-dasharray="10 90" stroke-dashoffset="-65"/></svg><p style="font-size:12px;text-align:center"><span style="color:#1d3a6b">■</span> Ofrendas 48% <span style="color:#c9a24a">■</span> Diezmos 24% <span style="color:#94a3b8">■</span> Aranceles 18% <span style="color:#e5d3a0">■</span> Otros 10%</p></div>
+<div class="card"><h3>Indicadores</h3><div class="dl"><b>Bautizos/año</b><span>6.940</span><b>Matrimonios</b><span>1.512</span><b>Catequizandos</b><span>9.870</span><b>Asistencia misa</b><span>~22% fieles</span><b>Reportes al día</b><span>38 / 42</span></div></div></div>
+<div class="card" style="margin-top:16px"><h3>Reportes disponibles</h3>${T(["Reporte","Periodo","Formato",""],[["Estadística anual para la Santa Sede","2025","PDF / Excel",'<button class="btn sm">Generar</button>'],["Sacramentos por parroquia","Trimestral","Excel",'<button class="btn sm">Generar</button>'],["Estado financiero consolidado","Mensual","PDF",'<button class="btn sm">Generar</button>'],["Padrón de feligreses","A demanda","Excel",'<button class="btn sm">Generar</button>']])}</div>`,
+conf:()=>{const m=["Ver dashboard diocesano","Gestionar todas las parroquias","Feligreses (ver / editar)","Registrar sacramentos","Emitir partidas y certificados","Agenda e intenciones","Catequesis","Finanzas parroquiales","Aprobar reportes diocesanos","Clero y nombramientos","Configuración y usuarios"],p=[[1,1,1,1,1,1,1,1,1,1,1],[0,0,1,1,1,1,1,1,0,0,0],[0,0,1,1,1,1,0,1,0,0,0],[0,0,1,0,0,0,1,0,0,0,0]],c=v=>v?'<td class="chk">✔</td>':'<td class="x">—</td>';
+return `<h2>Configuración y roles</h2><div class="sub">Usuarios, roles y matriz de permisos</div><div class="g g21"><div class="card"><h3>Matriz de permisos</h3><table><tr><th>Permiso</th><th>Obispo / Curia</th><th>Párroco</th><th>Secretaria</th><th>Catequista</th></tr>${m.map((x,i)=>`<tr><td>${x}</td>${p.map(r=>c(r[i])).join("")}</tr>`).join("")}</table></div>
+<div class="card"><h3>Usuarios</h3>${T(["Usuario","Rol"],[["Mons. M. García",tg("Obispo / Curia")],["Pbro. L. Torres",tg("Párroco")],["C. Ulloa",tg("Secretaria")],["L. Herrera",tg("Catequista")]])}<button class="btn" style="margin-top:12px;width:100%">+ Nuevo usuario</button>
+<h3 style="margin-top:18px">Parámetros</h3><div class="dl"><b>Diócesis</b><span>San Ejemplo</span><b>Moneda</b><span>Soles (S/)</span><b>Año pastoral</b><span>2026</span></div></div></div>`}};
+nav.innerHTML=V.map(v=>(v[3]?`<div class="sec">${v[3]}</div>`:"")+`<a id="n-${v[0]}" onclick="go('${v[0]}')">${v[1]} ${v[2]}</a>`).join("");
+function go(v){main.innerHTML=H[v]();document.querySelectorAll("nav a").forEach(a=>a.classList.toggle("on",a.id=="n-"+v));location.hash=v;window.scrollTo(0,0)}
+function entrar(){login.style.display="none";app.style.display="block";rolt.textContent=rol.value;go(location.hash.slice(1)&&H[location.hash.slice(1)]?location.hash.slice(1):"dash")}
+if(location.hash.length>1)entrar();
+</script></body></html>
