@@ -46,6 +46,8 @@ td{padding:.7rem .6rem;border-bottom:1px solid #f0e9dc;vertical-align:middle}
 .tag.ok{background:var(--okb);color:var(--ok)}.tag.w{background:var(--wb);color:var(--w)}.tag.r{background:var(--rb);color:var(--r)}
 .tabs{display:flex;flex-wrap:nowrap;overflow-x:auto;gap:.4rem;padding-bottom:.3rem;scrollbar-width:thin;margin-bottom:1.2rem}.tabs button{flex-shrink:0;font-size:.92rem;border:2px solid var(--bd);background:#fff;padding:.5rem .85rem;border-radius:1rem;cursor:pointer;font-weight:600;color:var(--tx)}
 .tabs button.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.tabs button:focus-visible{outline:3px solid var(--gold);outline-offset:-4px}
+[role="tabpanel"][hidden]{display:none !important}
 .alert{display:flex;gap:.8rem;align-items:center;padding:.9rem 1.1rem;border-radius:1rem;background:var(--wb);color:var(--w);margin-bottom:1rem;border:1px solid #f1d9a6}.alert.i{background:var(--ac2);color:var(--ac);border-color:#d9cbec}.alert.ok{background:var(--okb);color:var(--ok);border-color:#b9dcc4}
 .alert .sp{flex:1}
 .dl{display:grid;grid-template-columns:10rem 1fr;gap:.45rem .8rem}.dl b{color:var(--mu);font-weight:600}
@@ -112,6 +114,30 @@ const K=(n,l)=>`<div class="card kpi"><div class="l">${l}</div><div class="n">${
 const C=(t,h,x="")=>`<div class="card" ${x}>${t?`<h3>${t}</h3>`:""}${h}</div>`;
 const PH=(t,s,a="")=>`<div class="ph"><div><h2>${t}</h2><p>${s}</p></div><div class="sp"></div>${a}</div>`;
 const ver=`<button class="btn sec sm" onclick="go('sac',1)">👁 Ver</button>`;
+const LIBROS=[
+["bautizos","Bautizos",["Libro / Folio / N.º","Nombre","Fecha","Ministro",""],[["XII / 47 / 182","Valeria Castillo Vega","12/07/2026","P. Andrés Soto",ver],["XII / 46 / 181","Thiago Mendoza Paz","05/07/2026","Pbro. L. Torres",ver],["XII / 45 / 178","Sofía V. Quispe Rojas","14/06/2026","Pbro. L. Torres",ver],["XII / 45 / 177","Mateo Huamán Cárdenas","14/06/2026","Pbro. L. Torres",ver]]],
+["confirmaciones","Confirmaciones",["Libro / Folio / N.º","Nombre","Fecha","Ministro",""],[["V / 89 / 414","Bruno Paredes Gómez","15/08/2026","Mons. M. García",ver],["V / 88 / 413","Andrea Fernández López","15/08/2026","Mons. M. García",ver],["V / 88 / 412","Diego Quispe Rojas","15/08/2026","Mons. M. García",ver]]],
+["matrimonios","Matrimonios",["Libro / Folio / N.º","Contrayentes","Fecha","Ministro",""],[["VIII / 13 / 57","Luis Vega y Rosa Cruz","27/09/2026","P. Andrés Soto",ver],["VIII / 12 / 56","Carlos Rojas y Ana Pérez","20/09/2026","Pbro. L. Torres",ver]]],
+["defunciones","Defunciones",["Libro / Folio / N.º","Nombre","Fecha","Ministro",""],[["IV / 30 / 234","Teresa Gómez Ruiz","08/10/2026","Pbro. L. Torres",ver],["IV / 30 / 233","Eusebio Paredes Luna","03/10/2026","P. Andrés Soto",ver]]]
+];
+function libros(){
+const tabs=LIBROS.map((l,i)=>`<button type="button" role="tab" id="tab-${l[0]}" class="${i?"":"on"}" aria-selected="${i?"false":"true"}" aria-controls="panel-${l[0]}" tabindex="${i?"-1":"0"}">${l[1]}</button>`).join("");
+const panels=LIBROS.map((l,i)=>`<div role="tabpanel" id="panel-${l[0]}" aria-labelledby="tab-${l[0]}"${i?" hidden":""}>${T(l[2],l[3])}</div>`).join("");
+return `<div class="tabs" role="tablist" aria-orientation="horizontal" aria-label="Libros parroquiales" data-tabs="libros">${tabs}</div>${panels}`;
+}
+function activarTab(tab,moverFoco){
+const tabs=[...tab.closest('[role="tablist"]').querySelectorAll('[role="tab"]')];
+tab.tabIndex=0;
+if(moverFoco)tab.focus();
+tabs.forEach(t=>{
+const on=t===tab;
+t.classList.toggle("on",on);
+t.setAttribute("aria-selected",on?"true":"false");
+if(!on)t.tabIndex=-1;
+const p=document.getElementById(t.getAttribute("aria-controls"));
+if(p)p.hidden=!on;
+});
+}
 const MENU=[["inicio","🏠","Inicio"],["fel","👪","Feligreses y familias"],["sac","🕊️","Sacramentos"],["agenda","📅","Misas y agenda"],["cat","📖","Catequesis"],["fin","💰","Finanzas"],["equipo","⛪","Clero y personal"],["dio","🏛","Diócesis y sistema"]];
 let cur="inicio",curTab=0;
 const HELP={
@@ -141,7 +167,7 @@ fel:[["👪 Fichas",()=>PH("Feligreses y familias","4.312 familias · 14.870 per
 ${C("Historial sacramental de la familia",`<div class="tl"><div><b>2015 · Matrimonio</b> Juan y María<br><span class="hint">Libro VIII · Folio 12 · N.º 41</span></div><div><b>2012 · Bautizo</b> Diego<br><span class="hint">Padrinos: Carlos Rojas, Ana Pérez</span></div><div><b>2024 · Primera Comunión</b> Diego</div><div><b>2026 · Bautizo</b> Sofía<br><span class="hint">Libro XII · Folio 45 · N.º 178 · Padrinos: Carlos Rojas, Ana L. Pérez</span></div></div>`)}</div>
 <div class="g g3" style="margin-top:1.2rem">${C("Datos de contacto",`<div class="dl"><b>Dirección</b><span>Jr. Las Flores 245</span><b>Celular</b><span>987 654 321</span><b>Correo</b><span>jquispe@correo.ejemplo</span></div>`)}${C("Es padrino / madrina de",`<p>Juan: <b>2 bautizos</b>, <b>1 confirmación</b><br>María: <b>1 bautizo</b></p>`)}${C("Pendiente",`<p>Lucía: ${tg("Falta 1.ª Comunión","w")}</p><p>Diego: ${tg("En catequesis de Confirmación")}</p>`)}</div>`],
 ["⚠️ Duplicados",()=>PH("Duplicados","El sistema encontró fichas que podrían ser la misma persona")+C("",T(["Persona A","Persona B","Parecido",""],[["Juan Quispe Mamani · DNI 41234567 · San José","Juan Quispe M. · DNI 41234561 · Carmen",tg("92 %","r"),B("🔎","Comparar","sec sm")+" "+B("🔗","Unir","sm")],["Rosa López Silva · San José","Rosa Lopes Silva · San José",tg("85 %","w"),B("🔎","Comparar","sec sm")+" "+B("🔗","Unir","sm")],["Ana Vega Soto · 1980","Ana María Vega Soto · 1980",tg("78 %","w"),B("🔎","Comparar","sec sm")+" "+B("🔗","Unir","sm")]]))]],
-sac:[["📚 Libros y actas",()=>PH("Sacramentos","Libros parroquiales de San José",B("🕊️","Registrar bautizo","","wiz('wb')")+" "+B("📄","Emitir partida","gold","partida()"))+`<div class="g g4" style="margin-bottom:1.2rem">${K("Libro XII","Bautismos · folio 47")}${K("Libro V","Confirmaciones · folio 89")}${K("Libro VIII","Matrimonios · folio 13")}${K("Libro IV","Defunciones · folio 30")}</div>`+C("",`<div class="tabs"><button class="on">Bautizos</button><button>Confirmaciones</button><button>Matrimonios</button><button>Defunciones</button></div>`+T(["Libro / Folio / N.º","Nombre","Fecha","Ministro",""],[["XII / 47 / 182","Valeria Castillo Vega","12/07/2026","P. Andrés Soto",ver],["XII / 46 / 181","Thiago Mendoza Paz","05/07/2026","Pbro. L. Torres",ver],["XII / 45 / 178","Sofía V. Quispe Rojas","14/06/2026","Pbro. L. Torres",ver],["XII / 45 / 177","Mateo Huamán Cárdenas","14/06/2026","Pbro. L. Torres",ver]]))],
+sac:[["📚 Libros y actas",()=>PH("Sacramentos","Libros parroquiales de San José",B("🕊️","Registrar bautizo","","wiz('wb')")+" "+B("📄","Emitir partida","gold","partida()"))+`<div class="g g4" style="margin-bottom:1.2rem">${K("Libro XII","Bautismos · folio 47")}${K("Libro V","Confirmaciones · folio 89")}${K("Libro VIII","Matrimonios · folio 13")}${K("Libro IV","Defunciones · folio 30")}</div>`+C("",libros())],
 ["📜 Acta de bautismo",()=>PH("Acta de bautismo N.º 178","Libro XII · Folio 45",B("✏️","Agregar nota marginal","sec")+" "+B("📄","Emitir partida","","partida()"))+`<div class="g g2">${C("Datos del acta",`<div class="dl"><b>Bautizada</b><span>Sofía Valentina Quispe Rojas</span><b>Nacimiento</b><span>02/03/2026 · Lima</span><b>Padres</b><span>Juan Quispe Mamani y María Rojas Flores</span><b>Fecha</b><span>14/06/2026</span><b>Ministro</b><span>Pbro. Luis Alberto Torres</span><b>Padrino</b><span>Carlos Rojas Flores (DNI 40111222)</span><b>Madrina</b><span>Ana Lucía Pérez (DNI 41333444)</span></div>`)}
 ${C("Notas marginales",`<div class="tl"><div><b>Sin notas por ahora</b><br><span class="hint">Aquí se anotarán confirmación, matrimonio u otros cambios.</span></div></div><h3 style="margin-top:1.2rem">Ejemplo en otra acta (N.º 102)</h3><div class="alert i">✍️ <span>“Contrajo matrimonio en Parroquia del Carmen, Libro IX, F. 20, N.º 61, el 10/05/2025.”</span></div>`)}</div>`],
 ["💒 Matrimonios",()=>PH("Matrimonios","Preparación de bodas",B("➕","Nuevo expediente"))+`<div class="g g12">${C("Expedientes",T(["Novios","Boda",""],[["Luis Vega y Rosa Cruz","28/11/2026",tg("Faltan 2","w")],["Pedro Díaz y Ana Soto","12/12/2026",tg("Completo","ok")],["Jorge Lima y Eva Paz","09/01/2027",tg("Faltan 4","r")]]))}
@@ -193,6 +219,22 @@ $("#main").innerHTML=`<div class="wz"><div class="row"><h2 style="margin:0">${w.
 <div class="card"><p class="hint" style="margin:0">Paso ${s+1} de ${n}</p><h3>${st[0]}</h3><p class="lead">${st[1]}</p>${st[2]}
 <div class="wnav">${s?B("←","Atrás","sec big",`wiz('${k}',${s-1})`):"<span></span>"}${s<n-1?B("","Siguiente →","big",`wiz('${k}',${s+1})`):B("💾","Guardar","big","confirmar()")}</div></div></div>`;window.scrollTo(0,0)}
 document.addEventListener("click",e=>{const o=e.target.closest(".opt div");if(o){o.parentNode.querySelectorAll("div").forEach(d=>d.classList.remove("on"));o.classList.add("on")}});
+document.addEventListener("click",e=>{const tab=e.target.closest('[data-tabs="libros"] [role="tab"]');if(tab)activarTab(tab)});
+document.addEventListener("keydown",e=>{
+const tab=e.target.closest&&e.target.closest('[data-tabs="libros"] [role="tab"]');
+if(!tab)return;
+const tabs=[...tab.closest('[role="tablist"]').querySelectorAll('[role="tab"]')];
+const i=tabs.indexOf(tab);
+const horizontal=tab.closest('[role="tablist"]').getAttribute("aria-orientation")!=="vertical";
+let n=null;
+if((horizontal&&e.key==="ArrowRight")||(!horizontal&&e.key==="ArrowDown"))n=(i+1)%tabs.length;
+else if((horizontal&&e.key==="ArrowLeft")||(!horizontal&&e.key==="ArrowUp"))n=(i-1+tabs.length)%tabs.length;
+else if(e.key==="Home")n=0;
+else if(e.key==="End")n=tabs.length-1;
+else return;
+e.preventDefault();
+activarTab(tabs[n],true);
+});
 function confirmar(){const b=W=="wb";$("#ovc").innerHTML=`<div class="dlg"><h3>${b?"¿Guardar este bautizo?":"¿Guardar esta intención?"}</h3><p>${b?"Se anotará el acta <b>Libro XII · Folio 47 · N.º 183</b> de <b>Sofía Valentina Quispe Rojas</b>.":"Se anotará la intención por <b>† Eusebio Paredes</b> el domingo 18 a las 9:00 a. m. y se imprimirá el recibo."}</p><p class="hint">Podrá deshacerlo durante unos segundos.</p><div class="row" style="justify-content:flex-end;margin-top:1.2rem">${B("←","No, volver a revisar","sec","cerrar()")}${B("✔","Sí, guardar","","guardado()")}</div></div>`;$("#ov").classList.add("on")}
 function guardado(){cerrar();const b=W=="wb";go("inicio");toast(b?"✔ Bautizo guardado: Libro XII · Folio 47 · N.º 183":"✔ Intención anotada. Recibo N.º 1047 listo para imprimir.")}
 let tt;function toast(m,u=1){$("#tmsg").innerHTML=m;$("#tundo").style.display=u?"":"none";$("#toast").classList.add("on");clearTimeout(tt);tt=setTimeout(()=>$("#toast").classList.remove("on"),window.KEEP?999999:8000)}
