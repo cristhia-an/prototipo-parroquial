@@ -60,11 +60,7 @@ td{padding:8px;border-bottom:1px solid var(--bd)}tr.cl{cursor:pointer}tr.cl:hove
 <div class="sp"></div><span style="color:var(--mu)">🔔 3</span><div class="user"><div class="av">MG</div><div><b>Mons. Manuel García</b><br><small id="rolt" style="color:var(--mu)">Obispo / Curia</small></div></div></header>
 <main id="main"></main></div>
 <div class="modal" id="mod" onclick="if(event.target==this)this.classList.remove('on')"><div class="card">
-<div class="cert"><div style="font-size:28px;color:var(--gold)">✝</div><small>DIÓCESIS DE SAN EJEMPLO · PARROQUIA SAN JOSÉ</small><h4>PARTIDA DE BAUTISMO</h4>
-<p>Libro <b>XII</b> · Folio <b>45</b> · Partida <b>178</b></p>
-<p>El suscrito Párroco certifica que en el libro de bautismos de esta parroquia consta que<br><b style="font-size:17px">SOFÍA VALENTINA QUISPE ROJAS</b><br>
-nacida el 02 de marzo de 2026, hija de Juan Quispe Mamani y María Rojas Flores,<br>fue bautizada el 14 de junio de 2026 por el Pbro. Luis Alberto Torres.<br>Padrinos: Carlos Rojas Flores y Ana Lucía Pérez.</p>
-<p style="margin-top:22px">San Ejemplo, 13 de octubre de 2026</p><p style="margin-top:28px">______________________<br>Pbro. Luis Alberto Torres · Párroco</p></div>
+<div class="cert" id="cert"></div>
 <div style="text-align:right;margin-top:12px"><button class="btn out" onclick="mod.classList.remove('on')">Cerrar</button> <button class="btn gold">🖨 Imprimir / PDF</button></div></div></div>
 <script>
 const V=[["dash","📊","Dashboard","General"],["fel","👪","Feligreses","Pastoral"],["sac","🕊","Sacramentos"],["agenda","📅","Misas e intenciones"],["cat","📖","Catequesis"],["fin","💰","Finanzas","Administración"],["clero","⛪","Clero y personal"],["rep","📈","Reportes"],["conf","⚙","Configuración y roles","Sistema"]];
@@ -78,6 +74,31 @@ const meses=["May","Jun","Jul","Ago","Sep","Oct"],ing=[38,42,40,51,47,55],egr=[3
 function chart(){let s='<svg viewBox="0 0 520 210" width="100%"><g font-size="11" fill="#6b7280">';for(let i=0;i<=4;i++){let y=180-i*40;s+=`<line x1="40" x2="510" y1="${y}" y2="${y}" stroke="#eef"/><text x="5" y="${y+4}">S/${i*15}k</text>`}
 meses.forEach((m,i)=>{let x=60+i*77;s+=`<rect x="${x}" y="${180-ing[i]*2.66}" width="26" height="${ing[i]*2.66}" fill="#1d3a6b" rx="3"/><rect x="${x+28}" y="${180-egr[i]*2.66}" width="26" height="${egr[i]*2.66}" fill="#c9a24a" rx="3"/><text x="${x+14}" y="198">${m}</text>`});
 return s+'</g></svg><div style="font-size:12px;color:var(--mu)">■ <span style="color:#1d3a6b">Ingresos</span> &nbsp; ■ <span style="color:#c9a24a">Egresos</span> (miles S/)</div>'}
+const MESES=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+const fl=f=>{const [d,m,y]=f.split("/");return `${d} de ${MESES[+m-1]} de ${y}`};
+const CARGOS={"Pbro. L. Torres":["Pbro. Luis Alberto Torres","Párroco"],"P. Andrés Soto":["P. Andrés Soto","Vicario parroquial"],"Mons. M. García":["Mons. Manuel García","Obispo diocesano"]};
+const TIT=["PARTIDA DE BAUTISMO","PARTIDA DE CONFIRMACIÓN","PARTIDA DE MATRIMONIO","PARTIDA DE DEFUNCIÓN"];
+const CERTS=[
+[{lib:"XII",fol:"45",num:"178",nom:"Sofía Valentina Quispe Rojas",fecha:"14/06/2026",min:"Pbro. L. Torres",g:"a",nac:"02/03/2026",padres:"Juan Quispe Mamani y María Rojas Flores",extra:"Padrinos: Carlos Rojas Flores y Ana Lucía Pérez."},
+{lib:"XII",fol:"45",num:"179",nom:"Mateo Huamán Cárdenas",fecha:"14/06/2026",min:"Pbro. L. Torres",g:"o",nac:"19/01/2026",padres:"Pedro Huamán y Carmen Cárdenas",extra:"Padrinos: Luis Mendoza y Elena Benítez."},
+{lib:"XII",fol:"46",num:"180",nom:"Camila Salazar Cruz",fecha:"21/06/2026",min:"P. Andrés Soto",g:"a",nac:"03/11/2025",padres:"Raúl Salazar y Carmen Cruz",extra:"Padrinos: Ana Vega y Jorge Paredes."},
+{lib:"XII",fol:"46",num:"181",nom:"Thiago Mendoza Paz",fecha:"05/07/2026",min:"Pbro. L. Torres",g:"o",nac:"28/08/2025",padres:"Luis Mendoza y Rosa Paz",extra:"Padrinos: Pedro Huamán y Lucía Herrera."},
+{lib:"XII",fol:"47",num:"182",nom:"Valeria Castillo Vega",fecha:"12/07/2026",min:"P. Andrés Soto",g:"a",nac:"12/12/2025",padres:"Mario Castillo y Ana Vega",extra:"Padrinos: Carmen Cruz y Óscar Lima."}],
+[{lib:"V",fol:"88",num:"412",nom:"Diego Quispe Rojas",fecha:"15/08/2026",min:"Mons. M. García",extra:"Padrino: Carlos Rojas Flores."},
+{lib:"V",fol:"88",num:"413",nom:"Andrea Fernández López",fecha:"15/08/2026",min:"Mons. M. García",extra:"Madrina: Rosa López Silva."},
+{lib:"V",fol:"89",num:"414",nom:"Bruno Paredes Gómez",fecha:"15/08/2026",min:"Mons. M. García",extra:"Padrino: Jorge Paredes Gómez."}],
+[{lib:"VIII",fol:"12",num:"56",nom:"Carlos Rojas y Ana Pérez",fecha:"20/09/2026",min:"Pbro. L. Torres",extra:"Testigos: Juan Quispe Mamani y María Rojas Flores."},
+{lib:"VIII",fol:"13",num:"57",nom:"Luis Vega y Rosa Cruz",fecha:"27/09/2026",min:"P. Andrés Soto",extra:"Testigos: Marco Vega y Lidia Cruz."}],
+[{lib:"IV",fol:"30",num:"233",nom:"Eusebio Paredes Luna",fecha:"03/10/2026",min:"P. Andrés Soto"},
+{lib:"IV",fol:"30",num:"234",nom:"Teresa Gómez Ruiz",fecha:"08/10/2026",min:"Pbro. L. Torres"}]];
+function cuerpoPartida(t,a){const N=`<b style="font-size:17px">${a.nom.toUpperCase()}</b>`,[ml]=CARGOS[a.min];
+if(t==0)return `El suscrito Párroco certifica que en el libro de bautismos de esta parroquia consta que<br>${N}<br>nacid${a.g} el ${fl(a.nac)}, hij${a.g} de ${a.padres},<br>fue bautizad${a.g} el ${fl(a.fecha)} por el ${ml}.<br>${a.extra}`;
+if(t==1)return `El suscrito certifica que en el libro de confirmaciones de esta parroquia consta que<br>${N}<br>recibió el sacramento de la confirmación el ${fl(a.fecha)},<br>de manos de ${ml}.<br>${a.extra}`;
+if(t==2)return `El suscrito Párroco certifica que en el libro de matrimonios de esta parroquia consta que<br>${N}<br>contrajeron matrimonio canónico el ${fl(a.fecha)},<br>asistidos por el ${ml}.<br>${a.extra}`;
+return `El suscrito certifica que en el libro de defunciones de esta parroquia consta que<br>${N}<br>falleció y recibió las exequias en esta parroquia el ${fl(a.fecha)},<br>presididas por el ${ml}.`}
+function emitir(t,i){const a=CERTS[t][i],[ml,cargo]=CARGOS[a.min];
+cert.innerHTML=`<div style="font-size:28px;color:var(--gold)">✝</div><small>DIÓCESIS DE SAN EJEMPLO · PARROQUIA SAN JOSÉ</small><h4>${TIT[t]}</h4><p>Libro <b>${a.lib}</b> · Folio <b>${a.fol}</b> · Partida <b>${a.num}</b></p><p>${cuerpoPartida(t,a)}</p><p style="margin-top:22px">San Ejemplo, 13 de octubre de 2026</p><p style="margin-top:28px">______________________<br>${ml} · ${cargo}</p>`;
+mod.classList.add("on")}
 const H={
 dash:()=>`<h2>Dashboard diocesano</h2><div class="sub">Resumen general · Octubre 2026</div>
 <div class="g g4">${K("42","Parroquias activas","+1 cuasiparroquia")}${K("186.420","Feligreses registrados","▲ 2,1% vs. año anterior")}${K("1.284","Sacramentos del mes","▲ 8% vs. septiembre")}${K("S/ 552.300","Ingresos del mes (diócesis)","▲ 12% vs. septiembre")}</div>
@@ -91,9 +112,9 @@ ${T(["Familia","Jefe de familia","Sector","Miembros","Sacramentos","Estado"],[["
 <div class="card"><h3>Ficha familiar · Quispe Rojas</h3><div class="dl"><b>Código</b><span>FAM-SJ-00178</span><b>Dirección</b><span>Jr. Las Flores 245, Sector 3</span><b>Teléfono</b><span>987 654 321</span><b>Matrimonio</b><span>Religioso · 2015 · L.VIII F.12</span></div>
 <h3 style="margin-top:16px">Miembros</h3>${T(["Nombre","Rol","Sacramentos"],[["Juan Quispe","Padre","B · C · M"],["María Rojas","Madre","B · C · M"],["Diego Quispe","Hijo, 14","B · PC"],["Lucía Quispe","Hija, 9","B"],["Sofía Quispe","Hija, 0","B (2026)"]])}
 <div style="margin-top:12px"><button class="btn sm">Editar</button> <button class="btn out sm">Historial</button></div></div></div>`,
-sac:()=>{const tb=["Bautizo","Confirmación","Matrimonio","Defunción"],rows=[[["XII","45","178","Sofía Valentina Quispe Rojas","14/06/2026","Pbro. L. Torres"],["XII","45","179","Mateo Huamán Cárdenas","14/06/2026","Pbro. L. Torres"],["XII","46","180","Camila Salazar Cruz","21/06/2026","P. Andrés Soto"],["XII","46","181","Thiago Mendoza Paz","05/07/2026","Pbro. L. Torres"],["XII","47","182","Valeria Castillo Vega","12/07/2026","P. Andrés Soto"]],[["V","88","412","Diego Quispe Rojas","15/08/2026","Mons. M. García"],["V","88","413","Andrea Fernández López","15/08/2026","Mons. M. García"],["V","89","414","Bruno Paredes Gómez","15/08/2026","Mons. M. García"]],[["VIII","12","56","Carlos Rojas y Ana Pérez","20/09/2026","Pbro. L. Torres"],["VIII","13","57","Luis Vega y Rosa Cruz","27/09/2026","P. Andrés Soto"]],[["IV","30","233","Eusebio Paredes Luna","03/10/2026","P. Andrés Soto"],["IV","30","234","Teresa Gómez Ruiz","08/10/2026","Pbro. L. Torres"]]];
+sac:()=>{const tb=["Bautizo","Confirmación","Matrimonio","Defunción"];
 return `<h2>Sacramentos</h2><div class="sub">Libros sacramentales · Parroquia San José</div><div class="g g4" style="margin-bottom:16px">${K("XII","Libro de bautismos vigente","Folio 47 de 200")}${K("V","Libro de confirmaciones","Folio 89 de 200")}${K("VIII","Libro de matrimonios","Folio 13 de 150")}${K("IV","Libro de defunciones","Folio 30 de 200")}</div>
-<div class="card">${tabs("sa",tb)}${rows.map((r,i)=>P("sa",i,`<div class="bar"><input placeholder="🔍 Buscar en libro de ${tb[i].toLowerCase()}…"><div style="flex:1"></div><button class="btn out">+ Registrar ${tb[i].toLowerCase()}</button></div>`+T(["Libro","Folio","Partida",i==2?"Contrayentes":"Nombre","Fecha","Ministro","Acción"],r.map(x=>[...x,'<button class="btn gold sm" onclick="mod.classList.add(\'on\')">Emitir partida</button>'])))).join("")}</div>`},
+<div class="card">${tabs("sa",tb)}${CERTS.map((r,i)=>P("sa",i,`<div class="bar"><input placeholder="🔍 Buscar en libro de ${tb[i].toLowerCase()}…"><div style="flex:1"></div><button class="btn out">+ Registrar ${tb[i].toLowerCase()}</button></div>`+T(["Libro","Folio","Partida",i==2?"Contrayentes":"Nombre","Fecha","Ministro","Acción"],r.map((a,j)=>[a.lib,a.fol,a.num,a.nom,a.fecha,a.min,'<button class="btn gold sm" onclick="emitir('+i+','+j+')">Emitir partida</button>'])))).join("")}</div>`},
 agenda:()=>{const d=["Lun 12","Mar 13","Mié 14","Jue 15","Vie 16","Sáb 17","Dom 18"],hs=["07:00","09:00","12:00","17:00","19:00"],ev={"07:00":[0,1,2,3,4,5,6],"09:00":[6],"12:00":[6],"19:00":[0,2,4,5,6],"17:00":[5]};
 let c='<div class="cal"><div class="h"></div>'+d.map(x=>`<div class="h">${x}</div>`).join("");hs.forEach(h=>{c+=`<div><b>${h}</b></div>`;d.forEach((x,i)=>{let e=(ev[h]||[]).includes(i);c+=`<div>${e?`<div class="ev ${h=="17:00"?"b":""}">${h=="17:00"?"Matrimonio":i==6&&h=="12:00"?"Misa solemne":"Misa"}<br><small>${i%2?"P. Soto":"P. Torres"}</small></div>`:""}</div>`})});c+="</div>";
 return `<h2>Agenda de misas e intenciones</h2><div class="sub">Semana del 12 al 18 de octubre de 2026</div><div class="g g21"><div class="card"><div class="bar"><button class="btn out sm">◀</button><b>Octubre 2026</b><button class="btn out sm">▶</button><div style="flex:1"></div><button class="btn sm">+ Nueva celebración</button></div>${c}</div>
