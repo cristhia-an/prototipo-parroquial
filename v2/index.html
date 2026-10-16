@@ -124,7 +124,7 @@ fin:["Finanzas","Registre todo el dinero que entra y sale. Cada movimiento gener
 equipo:["Clero y personal","Fichas de sacerdotes, diáconos y personal laico.",["Las licencias en <b>rojo</b> están por vencer: avise a la Curia.","Los traslados y nombramientos quedan registrados con su fecha."]],
 dio:["Diócesis y sistema","Reportes para la Curia, el anuario para la Santa Sede, usuarios y copias de seguridad.",["Cada cambio en un acta queda guardado en <b>Auditoría</b>.","Las copias de seguridad se hacen solas cada noche."]],
 wb:["Registrar bautizo","Complete un paso a la vez. Puede volver atrás sin perder lo escrito.",["Tenga a mano el DNI de los padres y padrinos.","Al final verá un resumen para revisar antes de guardar."]],
-wi:["Anotar intención de misa","Anote por quién se ofrece la misa y cobre el estipendio.",["Elija primero el tipo de intención.","Al final se imprime el recibo."]]};
+wi:["Anotar intención de misa","Anote por quién se ofrece la misa y cobre el estipendio.",["Elija primero el tipo de intención. Los datos, el resumen y el recibo siguen ese tipo.","Puede volver atrás: la opción elegida se conserva.","Al final se imprime el recibo."]]};
 // ---------- pantallas
 const V={
 inicio:()=>`<div class="ph"><div><h2>Buenas tardes, Carmen 👋</h2><p>Martes 13 de octubre · Tiempo Ordinario <span class="tag ok">Verde</span></p></div></div>
@@ -216,4 +216,51 @@ function buscar(){const q=$("#q").value.trim().toLowerCase(),r=$("#sres");if(q.l
 document.addEventListener("click",e=>{if(!e.target.closest(".search"))$("#sres").style.display="none"});
 $("#nav").innerHTML=MENU.map(m=>`<a data-v="${m[0]}" onclick="go('${m[0]}')"><i>${m[1]}</i>${m[2]}</a>`).join("");
 function entrar(){$("#login").style.display="none";$("#app").style.display="block";$("#rolt").textContent=$("#rol").value;go("inicio")}
+// Intención de misa: lo elegido se guarda aparte de la plantilla. El envoltorio de wiz
+// queda después de optRadios() (PR de radios) para que ambos puedan convivir.
+const WI_TIPOS=[
+ {id:"Por un difunto",paso:"¿Por quién y quién la pide?",lead:"",label:"Nombre del difunto",por:"Eusebio Paredes Luna",pide:"Jorge Paredes Gómez",frase:p=>`† ${wiSinCruz(p)} (difunto)`},
+ {id:"Por la salud",paso:"¿Por quién se ofrece?",lead:"Escriba el nombre de la persona por cuya salud se ofrece la misa.",label:"Nombre de la persona",por:"Rosa López",pide:"Familia Fernández",frase:p=>wiYa(p,/^salud\b/i,s=>`Salud de ${s}`)},
+ {id:"Acción de gracias",paso:"¿Por qué se da gracias?",lead:"Escriba el motivo de la acción de gracias y quién pide la misa.",label:"Motivo de la acción de gracias",por:"10 años de casados",pide:"Luis Mendoza",frase:p=>wiYa(p,/^acción de gracias/i,s=>`Acción de gracias, ${s}`)},
+ {id:"Cumpleaños / aniversario",paso:"¿Qué ocasión se celebra?",lead:"Escriba el nombre y la ocasión, y quién pide la misa.",label:"Nombre y ocasión",por:"Cumpleaños de Lucía Quispe",pide:"María Rojas Flores",frase:p=>wiYa(p,/cumpleaños|aniversario/i,s=>`Cumpleaños / aniversario de ${s}`)},
+ {id:"Por la familia",paso:"¿Por qué familia se ofrece?",lead:"Escriba la familia por la que se ofrece la misa y quién la pide.",label:"Familia",por:"Familia Quispe Rojas",pide:"Juan Quispe Mamani",frase:p=>{const s=wiDato(p);if(s==="—")return s;if(/^por la familia/i.test(s))return s;if(/^familia\b/i.test(s))return "Por la "+s.charAt(0).toLowerCase()+s.slice(1);return "Por la familia "+s}},
+ {id:"Otra intención",paso:"¿Cuál es la intención?",lead:"Describa la intención con sus palabras y quién la pide.",label:"Intención",por:"Por las vocaciones de la parroquia",pide:"Ana Vega Soto",frase:p=>wiDato(p)}
+];
+let WI;
+function wiDato(p){const s=String(p??"").trim();return s||"—"}
+function wiYa(p,re,fmt){const s=wiDato(p);return s==="—"||re.test(s)?s:fmt(s)}
+function wiSinCruz(p){const s=wiDato(p).replace(/^†\s*/,"").replace(/\s*\(difunto\)\s*$/i,"").trim();return s||"—"}
+function wiEsc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]))}
+function wiTipo(id){return WI_TIPOS.find(t=>t.id===id)||WI_TIPOS[0]}
+function wiReset(){const t=WI_TIPOS[0];WI={tipo:t.id,dia:"Domingo 18 de octubre",hora:"09:00 a. m. (quedan 3 cupos)",por:t.por,pide:t.pide,cel:"955 222 111",monto:"S/ 20.00",pago:"Efectivo"}}
+function wiRotulo(el){return [...el.childNodes].filter(n=>n.nodeType===3).map(n=>n.textContent).join("").trim()}
+function wiTipoDom(){const radio=document.querySelector('.opt input[type="radio"]:checked');if(radio)return radio.value.trim();const on=document.querySelector(".opt div.on");return on?wiRotulo(on):""}
+function wiEls(){const card=document.querySelector(".wz .card");if(!card)return {inputs:[],selects:[]};return {inputs:[...card.querySelectorAll("input")].filter(el=>el.type!=="radio"),selects:[...card.querySelectorAll("select")]}}
+function wiEl(id,lista,i){return document.getElementById(id)||lista[i]||null}
+function wiPoner(el,v){if(!el)return;if(el.tagName==="SELECT"&&![...el.options].some(o=>o.value===v||o.text===v))return;el.value=v}
+function wiHoraResumen(h){return String(h).replace(/\s*\([^)]*\)\s*$/,"")}
+function wiHoraHabla(h){return wiHoraResumen(h).replace(/^0/,"")}
+function wiDiaResumen(d){return d==="Domingo 18 de octubre"?"Domingo 18/10":d}
+function wiMontoResumen(m){return String(m).replace(/\.00\b/,"")}
+function wiCuando(dia,hora){const h=wiEsc(wiHoraHabla(hora));return dia==="Domingo 18 de octubre"?`el domingo 18 a las ${h}`:`el ${wiEsc(dia)} a las ${h}`}
+function wiCapture(){if(W!=="wi"||!WI)return;const {inputs,selects}=wiEls();
+ if(ws===0){const id=wiTipoDom();const next=WI_TIPOS.find(t=>t.id===id);if(!next||next.id===WI.tipo)return;const prev=wiTipo(WI.tipo);if(WI.por.trim()===prev.por)WI.por=next.por;if(WI.pide.trim()===prev.pide)WI.pide=next.pide;WI.tipo=next.id}
+ else if(ws===1){const dia=wiEl("wi-dia",inputs,0),hora=wiEl("wi-hora",selects,0);if(dia)WI.dia=dia.value;if(hora)WI.hora=hora.value}
+ else if(ws===2){const por=wiEl("wi-difunto",inputs,0),pide=wiEl("wi-pide",inputs,1),cel=wiEl("wi-celular",inputs,2);if(por)WI.por=por.value;if(pide)WI.pide=pide.value;if(cel)WI.cel=cel.value}
+ else if(ws===3){const monto=wiEl("wi-monto",inputs,0),pago=wiEl("wi-pago",selects,0);if(monto)WI.monto=monto.value;if(pago)WI.pago=pago.value}}
+function wiPaint(){if(W!=="wi"||!WI)return;const t=wiTipo(WI.tipo);
+ if(ws===0){document.querySelectorAll(".opt div").forEach(d=>d.classList.toggle("on",wiRotulo(d)===t.id));document.querySelectorAll('.opt input[type="radio"]').forEach(r=>{r.checked=r.value.trim()===t.id})}
+ else if(ws===1){const {inputs,selects}=wiEls();wiPoner(wiEl("wi-dia",inputs,0),WI.dia);wiPoner(wiEl("wi-hora",selects,0),WI.hora)}
+ else if(ws===2){const h3=document.querySelector(".wz .card h3"),lead=document.querySelector(".wz .card .lead");if(h3)h3.textContent=t.paso;if(lead)lead.textContent=t.lead;const lab=document.querySelector(".wz .card label");if(lab)lab.textContent=t.label;const {inputs}=wiEls();wiPoner(wiEl("wi-difunto",inputs,0),WI.por);wiPoner(wiEl("wi-pide",inputs,1),WI.pide);wiPoner(wiEl("wi-celular",inputs,2),WI.cel)}
+ else if(ws===3){const {inputs,selects}=wiEls();wiPoner(wiEl("wi-monto",inputs,0),WI.monto);wiPoner(wiEl("wi-pago",selects,0),WI.pago)}
+ else if(ws===4){const dl=document.querySelector(".wz .dl");if(dl)dl.innerHTML=`<b>Intención</b><span>${wiEsc(t.frase(WI.por))}</span><b>Misa</b><span>${wiEsc(wiDiaResumen(WI.dia))} · ${wiEsc(wiHoraResumen(WI.hora))}</span><b>La pide</b><span>${wiEsc(WI.pide)}</span><b>Pago</b><span>${wiEsc(wiMontoResumen(WI.monto))} · ${wiEsc(WI.pago)} · se imprimirá recibo</span>`}}
+function wiConfirmHtml(){const t=wiTipo(WI.tipo),cuando=wiCuando(WI.dia,WI.hora),punto=cuando.endsWith(".")?"":".";return `Se anotará esta intención: <b>${wiEsc(t.frase(WI.por))}</b>. Misa: ${cuando}${punto} Pago: ${wiEsc(wiMontoResumen(WI.monto))} · ${wiEsc(WI.pago)}. Recibo N.º 1047.`}
+function wiAviso(){const t=wiTipo(WI.tipo);return `✔ Recibo N.º 1047 listo para imprimir: ${wiEsc(t.frase(WI.por))} · ${wiEsc(wiDiaResumen(WI.dia))} · ${wiEsc(wiHoraResumen(WI.hora))} · ${wiEsc(wiMontoResumen(WI.monto))} · ${wiEsc(WI.pago)}.`}
+wiReset();
+const wizPaso=wiz;
+wiz=function(k,s){const nuevo=arguments.length<2;if(k==="wi"){if(nuevo)wiReset();else if(W==="wi")wiCapture()}const r=wizPaso.apply(this,arguments);if(k==="wi")wiPaint();return r};
+const confirmarPaso=confirmar;
+confirmar=function(){if(W==="wi"&&WI){wiCapture();$("#ovc").innerHTML=`<div class="dlg"><h3>¿Guardar esta intención?</h3><p>${wiConfirmHtml()}</p><p class="hint">Podrá deshacerlo durante unos segundos.</p><div class="row" style="justify-content:flex-end;margin-top:1.2rem">${B("←","No, volver a revisar","sec","cerrar()")}${B("✔","Sí, guardar","","guardado()")}</div></div>`;$("#ov").classList.add("on");return}return confirmarPaso()};
+const guardadoPaso=guardado;
+guardado=function(){if(W==="wi"&&WI){const msg=wiAviso();cerrar();go("inicio");toast(msg);return}return guardadoPaso()};
 </script></body></html>
