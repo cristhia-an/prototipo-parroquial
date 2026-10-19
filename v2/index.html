@@ -216,4 +216,78 @@ function buscar(){const q=$("#q").value.trim().toLowerCase(),r=$("#sres");if(q.l
 document.addEventListener("click",e=>{if(!e.target.closest(".search"))$("#sres").style.display="none"});
 $("#nav").innerHTML=MENU.map(m=>`<a data-v="${m[0]}" onclick="go('${m[0]}')"><i>${m[1]}</i>${m[2]}</a>`).join("");
 function entrar(){$("#login").style.display="none";$("#app").style.display="block";$("#rolt").textContent=$("#rol").value;go("inicio")}
+// «Ver ficha» del aviso de bautizo: abre la ficha y deja volver al asistente.
+// No reescribe wiz() ni el paso, para convivir con el guardado de campos entre pasos.
+let fichaRet=null,fichaFoco=false;
+function verFichaDuplicado(){
+  if(W!=="wb"||!$("#main .wz"))return;
+  if(typeof wbLeer==="function")wbLeer();
+  const campos=[...$("#main").querySelectorAll("input,select,textarea")].map(el=>el.value);
+  fichaRet={k:W,s:ws,campos,wb:(typeof wb!=="undefined"&&wb)?{...wb}:null};
+  fichaFoco=true;
+  go("fel",1);
+}
+function mostrarVolver(foco){
+  if(!fichaRet||$("#btn-volver-asistente"))return;
+  const bar=document.createElement("div");
+  bar.className="alert i";
+  bar.id="barra-volver-asistente";
+  const tx=document.createElement("span");
+  tx.append("Está viendo la ficha de ");
+  const b=document.createElement("b");
+  b.textContent="Sofía V. Quispe Rojas";
+  tx.append(b," (familia Quispe Rojas). Lo escrito en el asistente sigue guardado. Escape también vuelve.");
+  const sp=document.createElement("span");
+  sp.className="sp";
+  const btn=document.createElement("button");
+  btn.type="button";
+  btn.className="btn sm";
+  btn.id="btn-volver-asistente";
+  btn.textContent="← Volver al asistente";
+  btn.addEventListener("click",volverAsistente);
+  bar.append(tx,sp,btn);
+  const tabs=$("#main .tabs");
+  if(tabs)tabs.after(bar);else $("#main").prepend(bar);
+  if(foco)btn.focus();
+}
+function marcarSofia(){
+  if(cur!=="fel"||curTab!==1)return;
+  const fila=[...$("#main").querySelectorAll("tr")].find(tr=>tr.cells[0]&&tr.cells[0].textContent.includes("Sofía Quispe"));
+  if(!fila||fila.dataset.dup)return;
+  fila.dataset.dup="1";
+  fila.style.background="var(--gold2)";
+  const tag=document.createElement("span");
+  tag.className="tag w";
+  tag.style.marginLeft=".5rem";
+  tag.textContent="Posible duplicado";
+  fila.cells[0].appendChild(tag);
+}
+function volverAsistente(){
+  if(!fichaRet)return;
+  const r=fichaRet;
+  fichaRet=null;
+  wiz(r.k,r.s);
+  if(r.wb&&typeof wb!=="undefined"&&wb){
+    Object.assign(wb,r.wb);
+    if(typeof wizOn!=="undefined")wizOn=true;
+    if(typeof wbPintar==="function")wbPintar(r.s);
+  }
+  const els=[...$("#main").querySelectorAll("input,select,textarea")];
+  r.campos.forEach((v,i)=>{if(els[i])els[i].value=v});
+  const btn=[...$("#main").querySelectorAll("button")].find(b=>b.textContent.includes("Ver ficha"));
+  if(btn)btn.focus();
+}
+const _go=go;
+go=function(v,t=0){_go(v,t);if(!fichaRet)return;mostrarVolver(fichaFoco);marcarSofia();fichaFoco=false};
+document.addEventListener("click",e=>{
+  const b=e.target.closest("#main .wz .alert button");
+  if(!b||!b.textContent.includes("Ver ficha"))return;
+  verFichaDuplicado();
+});
+document.addEventListener("keydown",e=>{
+  if(e.key!=="Escape"||!fichaRet)return;
+  if($("#ov").classList.contains("on")||$("#help").classList.contains("on"))return;
+  e.preventDefault();
+  volverAsistente();
+});
 </script></body></html>
