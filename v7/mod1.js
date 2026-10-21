@@ -108,15 +108,9 @@ function vInicio(){const ing=DB.movimientos.filter(m=>m.fecha==HOY&&m.tipo=='Ing
  `<div class="kp">
  <div><small>Sacramentos (jun–oct)</small><b>${sacM}</b><div class="tr"><span class="up">+4 vs. periodo anterior</span>${spark([9,12,11,14,13,16,18])}</div></div>
  <div><small>Intenciones registradas</small><b>${intS}</b><div class="tr"><span>${DB.intenciones.filter(i=>i.estado=='Pendiente pago').length} por cobrar</span>${spark([30,34,29,38,36,40,42])}</div></div>
- <div><small>Ingresos de hoy</small><b>${money(ing).replace(',00','')}</b><div class="tr"><span>${DB.caja.abierta?'Caja abierta':'Caja cerrada'}</span>${spark([800,950,700,1100,1065,980,1245])}</div></div>
+ <div><small>Ingresos de hoy</small><b>${money(ing)}</b><div class="tr"><span>${DB.caja.abierta?'Caja abierta':'Caja cerrada'}</span>${spark([800,950,700,1100,1065,980,1245])}</div></div>
  <div><small>Pendientes</small><b>${P.length}</b><div class="tr"><span class="dn">${P.filter(p=>p[2]=='Hoy').length} para hoy</span>${spark([4,6,5,9,8,6,7],'#7a2531')}</div></div></div>
- <div class="g2"><div class="pn"><div class="pnh"><h3>Ingresos y gastos · últimos 6 meses</h3><select class="sel" style="margin-left:auto" aria-label="Periodo"><option>6 meses</option><option>12 meses</option></select></div>
- <div class="chart"><svg viewBox="0 0 640 210" width="100%" role="img" aria-label="Ingresos de mayo a octubre con tendencia al alza; gastos estables">
- ${[0,1,2,3].map(i=>`<line x1="44" x2="630" y1="${20+i*55}" y2="${20+i*55}" stroke="#e3ded4"/><text x="0" y="${24+i*55}">S/ ${(30-i*10)}k</text>`).join('')}
- ${['May','Jun','Jul','Ago','Sep','Oct'].map((m,i)=>`<text x="${64+i*112}" y="205" text-anchor="${i==5?'end':'middle'}">${m}</text>`).join('')}
- <polyline fill="none" stroke="#1b1a17" stroke-width="1.8" points="64,95 176,82 288,100 400,70 512,62 624,48"/><polyline fill="none" stroke="#7a2531" stroke-width="1.5" stroke-dasharray="4 4" points="64,130 176,126 288,134 400,122 512,128 624,120"/>
- ${[[64,95],[176,82],[288,100],[400,70],[512,62],[624,48]].map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="3" fill="#fffdf9" stroke="#1b1a17" stroke-width="1.5"/>`).join('')}</svg>
- <div style="display:flex;gap:1.4rem;font-size:.85rem;color:var(--t2);flex-wrap:wrap"><span>— Ingresos · S/ 26 480 en octubre</span><span style="color:var(--ac)">- - Gastos · S/ 14 120</span></div></div></div>
+ <div class="g2">${finGrafico()}
  <div class="pn"><div class="pnh"><h3>Accesos rápidos</h3></div><div class="qa">
  <button class="btn" onclick="nuevaActa('Bautismo')">${I('plus')}Bautizo</button><button class="btn" onclick="abrirForm('intenciones')">${I('cand')}Intención</button>
  <button class="btn" onclick="go('sacramentos')">${I('doc')}Emitir partida</button><button class="btn" onclick="abrirForm('personas')">${I('users')}Nueva persona</button>
