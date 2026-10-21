@@ -53,10 +53,12 @@ function menu(){cerrar();$('aside').classList.add('on');scr(true);setTimeout(()=
 function go(m,t){if(!MODS[m])m='inicio';const same=m==cur;cur=m;ctab=Math.min(t||0,MODS[m].tabs.length-1);if(!same)for(const k in T)T[k].loaded=false;cerrar();history.replaceState(null,'','#'+m+'/'+ctab);render();window.scrollTo(0,0)}
 function render(){const M=MODS[cur];nav();
  $('#bc').innerHTML=`<span>${esc(parName())}</span>${I('right')}<span>${M.l}</span>${M.tabs.length>1?I('right')+`<b>${M.tabs[ctab][0]}</b>`:''}`;
- const tabs=M.tabs.length>1?`<div class="tabs" role="tablist">${M.tabs.map((x,j)=>`<button role="tab" aria-selected="${j==ctab}" class="${j==ctab?'on':''}" onclick="go('${cur}',${j})">${x[0]}</button>`).join('')}</div>`:'';
+ const tabs=M.tabs.length>1?`<div class="tabs" role="tablist" aria-orientation="horizontal" aria-label="${esc(M.l)}">${M.tabs.map((x,j)=>`<button role="tab" id="mtab-${j}" aria-selected="${j==ctab}" aria-controls="mpanel" tabindex="${j==ctab?0:-1}" class="${j==ctab?'on':''}" onclick="FOCUS_TAB=1;go('${cur}',${j})">${x[0]}</button>`).join('')}</div>`:'';
  let body=M.tabs[ctab][1]();
  // inserta las pestañas tras la cabecera de página
- $('#v').innerHTML=body;const ph_=$('#v').querySelector('.ph');if(ph_)ph_.insertAdjacentHTML('afterend',tabs);else $('#v').insertAdjacentHTML('afterbegin',tabs);if(M.tabs[ctab][2])M.tabs[ctab][2]()}
+ $('#v').innerHTML=body;const ph_=$('#v').querySelector('.ph');if(ph_)ph_.insertAdjacentHTML('afterend',tabs);else $('#v').insertAdjacentHTML('afterbegin',tabs);if(M.tabs[ctab][2])M.tabs[ctab][2]();
+ if(tabs){const list=$('#mtab-'+ctab).closest('[role="tablist"]');const panel=document.createElement('div');panel.id='mpanel';panel.setAttribute('role','tabpanel');panel.setAttribute('aria-labelledby','mtab-'+ctab);let n=list.nextSibling;while(n){const nx=n.nextSibling;panel.appendChild(n);n=nx}list.after(panel)}
+ focusTab($('#v'))}
 function rerender(){if($('#app').classList.contains('on')){shell();render()}}
 
 /* ---------- notificaciones ---------- */
