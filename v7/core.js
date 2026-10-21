@@ -145,14 +145,19 @@ function lv(ent,o){const e=E[ent];o=o||{};
  return (o.noHead?'':ph(e.p,e.sub?e.sub():'',ac))+(e.banner?e.banner():'')+table(ent,{ent,rows:()=>DB[e.tbl||ent],cols:e.cols,chips:e.chips,ph:e.ph||'Buscar '+e.p.toLowerCase()+'…',bulk:e.bulk||[['Exportar',ids=>exportar(e.p+' ('+ids.length+')')]],extra:e.extra,empty:[`Todavía no hay ${e.p.toLowerCase()}`,e.emptyTxt||`Cuando registre ${e.art||'el'} primer${e.art=='la'?'a':'o'} ${e.s} aparecerá aquí.`,e.noNew?'':`<button class="btn p" onclick="${e.newFn||`abrirForm('${ent}')`}">${I('plus')}${e.nuevo||'Nuevo '+e.s}</button>`],open:e.open})}
 function rec(ent,id){return DB[E[ent].tbl||ent].find(x=>x.id==id)}
 let DET=null;
-function det(ent,id,tab){const e=E[ent],r=rec(ent,id);if(!r){toast('Este registro ya no existe.');return}DET={ent,id,tab:tab||0};
+function det(ent,id,tab){const e=E[ent],r=rec(ent,id);if(!r){toast('Este registro ya no existe.');return}
+ const dr=$('#dr'),tabPrev=dr.classList.contains('on')&&document.activeElement&&document.activeElement.closest&&document.activeElement.closest('#dr [role=tab]');
+ const tabTxt=tabPrev?tabPrev.textContent:'';
+ DET={ent,id,tab:tab||0};
  const tabs=[['Resumen',()=>`<dl>${e.f(r).filter(f=>!f.hide).map(f=>`<dt>${f.l}</dt><dd>${fv(f,r[f.k])||'<span class="muted">—</span>'}</dd>`).join('')}</dl>`+(e.extra2?e.extra2(r):'')],...(e.tabs?e.tabs(r):[]),['Historial',()=>histView(r)]];
  const ti=Math.min(DET.tab,tabs.length-1);
- $('#dr').innerHTML=`<div class="drh"><div><h2>${esc(e.title(r))}</h2><p>${e.status?sb(e.status(r))+' &nbsp;':''}${e.sub2?e.sub2(r):''}</p></div><button class="btn g" onclick="cerrar()">${I('x')}Cerrar</button></div>
+ dr.innerHTML=`<div class="drh"><div><h2 id="dr-titulo">${esc(e.title(r))}</h2><p>${e.status?sb(e.status(r))+' &nbsp;':''}${e.sub2?e.sub2(r):''}</p></div><button class="btn g" onclick="cerrar()">${I('x')}Cerrar</button></div>
  <div style="padding:0 1.2rem"><div class="tabs" role="tablist" style="margin:0">${tabs.map((x,i)=>`<button role="tab" aria-selected="${i==ti}" class="${i==ti?'on':''}" onclick="det('${ent}','${id}',${i})">${x[0]}</button>`).join('')}</div></div>
  <div class="drb">${e.warn?e.warn(r):''}${tabs[ti][1]()}</div>
  <div class="drf">${e.acts?e.acts(r):''}<button class="btn hm" onclick="imprimirReg('${ent}','${id}')">${I('print')}Imprimir</button>${e.noDel?'':`<button class="btn d" onclick="${e.del=='anular'?`anular('${ent}','${id}')`:`borrar('${ent}','${id}')`}">${I(e.del=='anular'?'ban':'trash')}${e.del=='anular'?'Anular':'Eliminar'}</button>`}${e.noEdit?'':`<button class="btn p" onclick="abrirForm('${ent}','${id}')">${I('edit')}Editar</button>`}</div>`;
- scr(true);$('#dr').classList.add('on');$('#md').classList.remove('on')}
+ scr(true);dr.classList.add('on');$('#md').classList.remove('on');nombrarDlg(dr);syncInert();
+ if(tabTxt){const txt=tabTxt;setTimeout(()=>{if(!dr.classList.contains('on'))return;const b=[...dr.querySelectorAll('[role=tab]')].find(t=>t.textContent===txt);if(b)enfocar(b)},0)}
+ else setTimeout(()=>{if(!dr.classList.contains('on')||dr.contains(document.activeElement))return;enfocar(focos(dr)[0]||dr)},0)}
 function fv(f,v){if(f.t=='ref'){const x=DB[f.ref].find(x=>x.id==v);return x?esc(f.lab?f.lab(x):x.nombre):''}if(f.t=='money')return v===''||v==null?'':money(v);if(f.t=='check')return v?'Sí':'No';if(f.t=='checks')return esc((v||[]).join(', '));if(f.k=='estado')return sb(v);return esc(v)}
 function histView(r){const h=r.h||[];if(!h.length)return emptyState('Sin cambios registrados','Aquí verá quién creó o modificó este registro y qué cambió.');
  return `<div class="tl">${h.map(x=>`<div class="ok"><b style="font-weight:600">${esc(x.acc)}</b> <small>· ${esc(x.u)} · ${esc(x.t)}</small>${x.c&&x.c.length?`<table style="margin-top:.3rem;font-size:.85rem"><tbody>${x.c.map(c=>`<tr><td class="muted">${esc(c[0])}</td><td><del>${esc(c[1])||'—'}</del></td><td>→ <ins>${esc(c[2])||'—'}</ins></td></tr>`).join('')}</tbody></table>`:''}</div>`).join('')}</div>`}
@@ -190,10 +195,10 @@ function abrirForm(ent,id,preset,step){const e=E[ent];const r=id?rec(ent,id):nul
  const title=(id?(e.editT||'Editar '+e.s):(e.newT?e.newT(FS.vals):e.nuevo||'Nuevo '+e.s));
  const last=!steps||FS.step==steps.length;
  $('#md').style.width=steps?'50rem':'44rem';
- $('#md').innerHTML=`<div class="drh"><div><h2>${title}</h2><p>${steps?`Paso ${FS.step+1} de ${steps.length+1} · ${FS.step<steps.length?steps[FS.step]:'Revisar'}`:id?esc(e.title(r)):'Complete los datos. Los marcados como obligatorios son necesarios.'}</p></div><button class="btn g" onclick="FS=null;cerrar()">${I('x')}Cerrar</button></div>
+ $('#md').innerHTML=`<div class="drh"><div><h2 id="md-titulo">${title}</h2><p>${steps?`Paso ${FS.step+1} de ${steps.length+1} · ${FS.step<steps.length?steps[FS.step]:'Revisar'}`:id?esc(e.title(r)):'Complete los datos. Los marcados como obligatorios son necesarios.'}</p></div><button class="btn g" onclick="FS=null;cerrar()">${I('x')}Cerrar</button></div>
  ${steps?`<div class="wz"><div class="wzs">${[...steps,'Revisar'].map((x,i)=>`<div class="${i==FS.step?'on':i<FS.step?'dn':''}"><i>${i<FS.step?'✓':i+1}</i>${x}</div>`).join('')}</div><div class="wzb">${body}</div></div>`:`<div class="drb">${body}</div>`}
  <form class="drf" onsubmit="event.preventDefault();fsub()"><button type="button" class="btn" style="margin-right:auto" ${steps&&FS.step?'':'hidden'} onclick="fback()">${I('left')}Atrás</button><button type="button" class="btn" onclick="FS=null;cerrar()">Cancelar</button><button class="btn p">${last?(id?'Guardar cambios':e.saveL||'Guardar'):'Continuar'}${last?'':I('right')}</button></form>`;
- scr(true);$('#dr').classList.remove('on');$('#md').classList.add('on');
+ scr(true);$('#dr').classList.remove('on');$('#md').classList.add('on');nombrarDlg($('#md'));syncInert();
  setTimeout(()=>{const es=$('#esum');if(es)es.focus();else{const f=$('#md .fg input:not([readonly]),#md .fg select,#md .fg textarea');if(f&&!window.KEEP)f.focus()}},30)}
 function fcollect(){const e=E[FS.ent];const fs=e.f(FS.vals).filter(f=>!f.view);const steps=e.steps&&!FS.id?e.steps:null;const cur=steps?fs.filter(f=>f.step==FS.step):fs;const extra=FS.id&&e.motivoEdit?[{k:'_motivo',l:'Motivo',req:1}]:[];
  if(!steps||FS.step<steps.length)Object.assign(FS.vals,readF([...cur,...extra]));return {e,fs,steps,cur:[...cur,...extra]}}
@@ -239,7 +244,54 @@ function exportar(nombre,fmt,direct){const go=f=>{$('#md2').innerHTML=`<div clas
  if(direct)return go(fmt);
  ask({t:'Exportar',txt:esc(nombre),html:`<div class="fld"><span>Formato</span><div class="seg" role="radiogroup">${['Excel','PDF','CSV'].map((f,i)=>`<button type="button" class="${i?'':'on'}" onclick="$$('#md2 .seg button').forEach(b=>b.classList.remove('on'));this.classList.add('on')">${f}</button>`).join('')}</div></div><label class="ckl"><label style="font-weight:400"><input type="checkbox" checked>Incluir solo los registros filtrados</label></label>`,ok:'Exportar',undo:false,onok:()=>go($('#md2 .seg .on')?.textContent||'Excel')})}
 
+/* ---------- foco en diálogos y aviso Deshacer ---------- */
+let focoPila=[],focoPendiente=null,focoAviso=null,capasAhora=new Set(),capaTimer,tt,avisoT,enterAbajo=false,avisoPendiente=false,devolverAlSoltar=false;
+function enfocar(el){if(!el)return;try{el.focus({preventScroll:true,focusVisible:true})}catch(e){try{el.focus({preventScroll:true})}catch(e2){el.focus()}}}
+function focos(raiz){return [...raiz.querySelectorAll('a[href],button,input,select,textarea,[tabindex]')].filter(el=>{
+ if(el.disabled||el.getAttribute('aria-disabled')==='true'||el.tabIndex<0)return false;
+ if(el.closest('[hidden]')||el.getAttribute('aria-hidden')==='true'||el.type==='hidden')return false;
+ const s=getComputedStyle(el);return s.display!=='none'&&s.visibility!=='hidden'})}
+function capaId(el){return el?(el.id||(el.tagName==='ASIDE'?'aside':'')):''}
+function capaActiva(){if($('#md2').classList.contains('on'))return $('#md2');if($('#md').classList.contains('on'))return $('#md');if($('#pal').classList.contains('on'))return $('#pal');if($('#dr').classList.contains('on'))return $('#dr');
+ if($('aside').classList.contains('on')&&matchMedia('(max-width:1023px)').matches)return $('aside');return null}
+function capasSet(){const s=new Set();['md2','md','pal','dr'].forEach(id=>{if($('#'+id).classList.contains('on'))s.add(id)});
+ if($('aside').classList.contains('on')&&matchMedia('(max-width:1023px)').matches)s.add('aside');return s}
+function focoUtil(el){if(!el||!el.isConnected||el.closest('[inert]'))return false;for(let n=el;n;n=n.parentElement){const s=getComputedStyle(n);if(s.display==='none'||s.visibility==='hidden')return false}
+ const dlg=el.closest('#dr,#md,#md2,#pal');if(dlg&&!dlg.classList.contains('on'))return false;
+ const as=el.closest('aside');if(as&&matchMedia('(max-width:1023px)').matches&&!as.classList.contains('on'))return false;return true}
+function nombrarDlg(el){if(!el)return;const role=el.getAttribute('role');if(role!=='dialog'&&role!=='alertdialog')return;
+ const h=el.querySelector('h1,h2,h3');if(!h)return;if(!h.id)h.id=(el.id||'dlg')+'-titulo';el.setAttribute('aria-labelledby',h.id);if(!el.hasAttribute('tabindex'))el.tabIndex=-1}
+function syncInert(){const top=capaActiva(),menu=top&&top.tagName==='ASIDE';
+ $('#login').inert=!!top;const main=$('.main');
+ if(menu){$('#app').inert=false;if(main)main.inert=true}else{if(main)main.inert=false;$('#app').inert=!!top}
+ const marca=(el,activo)=>{el.inert=!activo;const role=el.getAttribute('role');if(role==='dialog'||role==='alertdialog')el.setAttribute('aria-hidden',activo?'false':'true')};
+ marca($('#dr'),$('#dr')===top);['#md','#md2','#pal'].forEach(s=>marca($(s),$(s)===top));
+ const as=$('aside');if(matchMedia('(max-width:1023px)').matches)as.inert=as!==top;else as.inert=false}
+function devolverFoco(){const top=capaActiva();let g=focoPila.length+1;while(focoPila.length&&g--){const el=focoPila[focoPila.length-1];if(top&&!top.contains(el))return;focoPila.pop();if(focoUtil(el)){enfocar(el);return}}}
+function enfocarDeshacer(){const b=$('#tundo'),t=$('#toast');if(!b||!t.classList.contains('on')||capaActiva())return false;const a=document.activeElement;if(a&&a!==document.body&&!t.contains(a)&&focoUtil(a))focoAviso=a;enfocar(b);avisoPendiente=false;return true}
+function asentarCapas(){const ahora=capasSet(),nuevas=[...ahora].filter(id=>!capasAhora.has(id)),cerradas=[...capasAhora].filter(id=>!ahora.has(id)),top=capaActiva();
+ if(top)nombrarDlg(top);
+ if(nuevas.length&&focoPendiente&&focoPendiente.isConnected&&top&&!top.contains(focoPendiente)&&!$('#toast').contains(focoPendiente)&&focoPila[focoPila.length-1]!==focoPendiente)focoPila.push(focoPendiente);
+ capasAhora=ahora;focoPendiente=null;syncInert();
+ if(top&&nuevas.includes(capaId(top))&&!top.contains(document.activeElement)){const f=focos(top);enfocar(f[0]||top)}
+ if(cerradas.length&&!$('#tundo')){if(enterAbajo)devolverAlSoltar=true;else devolverFoco()}}
+function programarCapa(){clearTimeout(capaTimer);capaTimer=setTimeout(asentarCapas,50)}
+
 /* ---------- capa general ---------- */
-function scr(on){$('#scr').classList.toggle('on',on)}
+function scr(on){$('#scr').classList.toggle('on',!!on);const a=document.activeElement;focoPendiente=a&&a!==document.body&&a!==document.documentElement&&!$('#toast').contains(a)?a:null;queueMicrotask(()=>{const top=capaActiva();if(top)nombrarDlg(top);syncInert()});programarCapa()}
 function cerrar(){['#dr','#md','#md2','#pal','aside'].forEach(s=>$(s).classList.remove('on'));$$('.dd.on,.zm.on').forEach(x=>x.classList.remove('on'));scr(false);DET=null}
-let tt;function toast(m,u,extra){const t=$('#toast');t.innerHTML=`${I('check')}<span>${esc(m)}</span>${extra||''}${u?`<button class="btn" onclick="undo()">Deshacer</button>`:''}`;t.classList.add('on');clearTimeout(tt);if(!window.KEEP)tt=setTimeout(()=>t.classList.remove('on'),9000)}
+function ocultarAviso(){const t=$('#toast');if(!t.classList.contains('on'))return;if(t.contains(document.activeElement)&&focoUtil(focoAviso))enfocar(focoAviso);t.classList.remove('on')}
+function toast(m,u,extra){const t=$('#toast');if(t.contains(document.activeElement)&&!u&&focoUtil(focoAviso))enfocar(focoAviso);
+ if(!t.classList.contains('on')){const a=document.activeElement;if(a&&a!==document.body&&!t.contains(a))focoAviso=a;else{const p=[...focoPila].reverse().find(focoUtil);if(p)focoAviso=p}}
+ t.setAttribute('aria-atomic','true');
+ t.innerHTML=`${I('check')}<span id="tmsg">${esc(m)}</span>${extra||''}${u?`<button type="button" class="btn" id="tundo" aria-describedby="tmsg" onclick="undo()">Deshacer</button>`:''}`;
+ t.classList.add('on');clearTimeout(avisoT);avisoPendiente=false;
+ if(u){avisoPendiente=true;avisoT=setTimeout(()=>{if(avisoPendiente&&!enterAbajo)enfocarDeshacer()},0)}
+ clearTimeout(tt);if(!window.KEEP)tt=setTimeout(ocultarAviso,9000)}
+document.addEventListener('keydown',e=>{if(e.key==='Enter')enterAbajo=true},true);
+document.addEventListener('keyup',e=>{if(e.key!=='Enter')return;enterAbajo=false;if(avisoPendiente)enfocarDeshacer();else if(devolverAlSoltar){devolverAlSoltar=false;devolverFoco()}},true);
+document.addEventListener('keydown',e=>{if(e.key!=='Tab'||e.altKey||e.ctrlKey||e.metaKey)return;const top=capaActiva();if(!top)return;const f=focos(top);if(!f.length){e.preventDefault();enfocar(top);return}
+ const i=f.indexOf(document.activeElement);if(i<0){if(!top.contains(document.activeElement)||document.activeElement===top){e.preventDefault();enfocar(e.shiftKey?f[f.length-1]:f[0])}return}
+ if(e.shiftKey&&i===0){e.preventDefault();enfocar(f[f.length-1])}else if(!e.shiftKey&&i===f.length-1){e.preventDefault();enfocar(f[0])}},true);
+capasAhora=capasSet();syncInert();
+const capaMO=new MutationObserver(programarCapa);['#dr','#md','#md2','#pal','aside'].forEach(s=>{const el=$(s);if(el)capaMO.observe(el,{attributes:true,attributeFilter:['class']})});
