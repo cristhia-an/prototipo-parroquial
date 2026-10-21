@@ -244,3 +244,13 @@ table.rq td,table.cx td{vertical-align:top}table.cx input,table.rq select{width:
 @media (max-width:767px){.rcb table{width:100%}.rcb table tr{display:table-row!important}.rcb table td{display:table-cell!important;padding:.3rem .4rem}.rcb table td::before{content:none!important}}
 main,#v,.mn{min-width:0}.tabs{min-width:0;max-width:100%}
 .tw{overflow-x:auto;max-width:100%}table.rq{width:100%}table.rq td{white-space:normal}table.rq input{max-width:9rem}
+/* El gráfico de bautismos incluye una tabla solo para lectores de pantalla. width/height de .sr no encogen una tabla, y sin recorte alarga el scroll. En móvil, las tablas pasan a fichas y ocultan celdas con display:none, que las saca del árbol de accesibilidad. */
+.chart{position:relative;overflow:hidden}
+.chart .sr{pointer-events:none}
+@media (max-width:767px){
+ table.sr{display:table}
+ table.sr thead{display:table-header-group}
+ table.sr tbody{display:table-row-group}
+ table.sr tr{display:table-row}
+ table.sr th,table.sr td{display:table-cell}
+}
