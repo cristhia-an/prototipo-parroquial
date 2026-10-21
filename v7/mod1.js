@@ -34,10 +34,10 @@ function renderLogin(){const e=LG.err;const F=(k,l,t,v,ex)=>`<label class="fld">
 function doLogin(){const m=$('#l_mail').value.trim(),p=$('#l_pw').value;LG.mail=m;LG.pw=p;LG.err={};
  if(!m)LG.err.mail='Escriba su correo electrónico.';else if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(m))LG.err.mail='El correo no parece válido. Revise que tenga @ y un dominio.';
  if(!p)LG.err.pw='Escriba su contraseña.';else if(p.length<6)LG.err._='El correo o la contraseña no son correctos. Revise e intente de nuevo. Después de 5 intentos la cuenta se bloquea 15 minutos.';
- if(Object.keys(LG.err).length)return renderLogin();DB.par=$('#l_par').value;save();sessionStorage.in7=1;entrar()}
+ if(Object.keys(LG.err).length)return renderLogin();DB.par=$('#l_par').value;save();ssSet('in7','1');entrar()}
 function doRec(){const m=$('#l_mail').value.trim();LG.mail=m;LG.err={};if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(m)){LG.err.mail=m?'El correo no parece válido. Revise que tenga @ y un dominio.':'Escriba su correo electrónico.';return renderLogin()}LG.mode='rec2';renderLogin()}
 function entrar(){$('#login').style.display='none';$('#app').classList.add('on');shell();const h=location.hash.slice(1).split('/');if(h[0]&&MODS[h[0]])go(h[0],+h[1]||0);else go(isCuria()?'curia':'inicio')}
-function salir(){ask({t:'¿Cerrar sesión?',txt:'Se cerrará su sesión en este equipo. Los cambios ya están guardados.',ok:'Cerrar sesión',undo:false,onok:()=>{sessionStorage.removeItem("in7");cerrar();$('#app').classList.remove('on');$('#login').style.display='';LG={mode:'login',err:{}};renderLogin();location.hash=''}})}
+function salir(){ask({t:'¿Cerrar sesión?',txt:'Se cerrará su sesión en este equipo. Los cambios ya están guardados.',ok:'Cerrar sesión',undo:false,onok:()=>{ssDel('in7');cerrar();$('#app').classList.remove('on');$('#login').style.display='';LG={mode:'login',err:{}};renderLogin();try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}}})}
 
 /* ---------- estructura ---------- */
 function shell(){const p=isCuria();$('#psb').innerHTML=`<span class="m">${p?'D':parName()[0]}</span><span><b>${p?'Curia diocesana':esc(parName())}</b><small>${p?'Vista consolidada':'Lima · cambiar'}</small></span>${I('chev')}`;
@@ -50,7 +50,15 @@ function navGroups(){if(isCuria())return [['Diócesis',[['curia','bld','Consolid
 function nav(){const cnt={feligreses:DB.personas.length,agenda:DB.intenciones.filter(i=>i.estado=='Pendiente pago').length||'',sacramentos:DB.actas.filter(a=>a.estado=='Pendiente firma').length||''};
  $('#nav').innerHTML=navGroups().map(g=>`<div class="grp">${g[0]}</div>`+g[1].map(x=>`<a href="#${x[0]}/${x[3]}" class="${x[0]==cur&&(!isCuria()||x[3]==ctab||x[0]!='curia')?'on':''}" ${x[0]==cur?'aria-current="page"':''} onclick="event.preventDefault();go('${x[0]}',${x[3]})">${I(x[1])}${x[2]}${!isCuria()&&cnt[x[0]]?`<span class="n">${cnt[x[0]]}</span>`:''}</a>`).join('')).join('')}
 function menu(){cerrar();$('aside').classList.add('on');scr(true);setTimeout(()=>$('#nav a')?.focus(),50)}
-function go(m,t){if(!MODS[m])m='inicio';const same=m==cur;cur=m;ctab=Math.min(t||0,MODS[m].tabs.length-1);if(!same)for(const k in T)T[k].loaded=false;cerrar();history.replaceState(null,'','#'+m+'/'+ctab);render();window.scrollTo(0,0)}
+/* Historial: pushState al cambiar de vista; Atrás/Adelante solo pintan (navLock) para no duplicar entradas. */
+let navLock=0;
+function pqHist(hash,push){try{const st={pq:1};if(push)history.pushState(st,'',hash);else history.replaceState(st,'',hash)}catch(e){}}
+function go(m,t){if(!MODS[m])m='inicio';const tab=Math.min(+t||0,MODS[m].tabs.length-1);const hash='#'+m+'/'+tab;
+ if(!navLock){const known=history.state&&history.state.pq;if(location.hash!==hash)pqHist(hash,!!known);else if(!known)pqHist(hash,false)}
+ if(navLock&&m==cur&&tab==ctab)return;
+ const same=m==cur;cur=m;ctab=tab;if(!same)for(const k in T)T[k].loaded=false;cerrar();render();window.scrollTo(0,0)}
+function onNavHist(){if(!$('#app').classList.contains('on'))return;const p=location.hash.replace(/^#/,'').split('/');let m=p[0],t=+p[1]||0;if(!m||!MODS[m]){m=isCuria()?'curia':'inicio';t=0}navLock=1;try{go(m,t)}finally{navLock=0}}
+addEventListener('popstate',onNavHist);addEventListener('hashchange',onNavHist);
 function render(){const M=MODS[cur];nav();
  $('#bc').innerHTML=`<span>${esc(parName())}</span>${I('right')}<span>${M.l}</span>${M.tabs.length>1?I('right')+`<b>${M.tabs[ctab][0]}</b>`:''}`;
  const tabs=M.tabs.length>1?`<div class="tabs" role="tablist">${M.tabs.map((x,j)=>`<button role="tab" aria-selected="${j==ctab}" class="${j==ctab?'on':''}" onclick="go('${cur}',${j})">${x[0]}</button>`).join('')}</div>`:'';
@@ -87,7 +95,7 @@ function ayuda(){cerrar();const M=MODS[cur];$('#dr').innerHTML=`<div class="drh"
  <h4>¿Se equivocó?</h4><p>Después de guardar aparece <b>Deshacer</b> durante unos segundos. Además, todo queda en Auditoría.</p>
  <div class="row mt"><button class="btn" onclick="go('ayuda')">${I('help')}Abrir el centro de ayuda</button></div>
  <p style="margin-top:1.2rem"><b>Soporte:</b> 01 555 0100 · lunes a viernes, 9:00–17:00</p></div>`;scr(true);$('#dr').classList.add('on')}
-function zoom(z){document.documentElement.style.fontSize=17*z/100+'px';document.body.dataset.z=z;$('#zl').textContent=z+'%';localStorage.zoom7=z;$('#zb').innerHTML=[75,100,125,150].map(v=>`<button class="${v==z?'on':''}" aria-pressed="${v==z}" onclick="zoom(${v})"><span>${v==100?'Normal':v<100?'Pequeño':v==125?'Grande':'Muy grande'}</span><span>${v}%</span></button>`).join('')}
+function zoom(z){z=+z||100;document.documentElement.style.fontSize=17*z/100+'px';document.body.dataset.z=z;$('#zl').textContent=z+'%';lsSet('zoom7',z);$('#zb').innerHTML=[75,100,125,150].map(v=>`<button class="${v==z?'on':''}" aria-pressed="${v==z}" onclick="zoom(${v})"><span>${v==100?'Normal':v<100?'Pequeño':v==125?'Grande':'Muy grande'}</span><span>${v}%</span></button>`).join('')}
 function cambiarPar(){cerrar();const ps=[...DB.parroquias.filter(p=>DB.usuarios.find(u=>u.nombre==DB.me.nombre)?.pars.includes(p.nombre)||p.id=='sj'),{id:'curia',nombre:'Curia diocesana',lugar:'Vista consolidada de todas las parroquias'}];
  ask({t:'Cambiar de parroquia',txt:'Elija dónde quiere trabajar. Solo aparecen las parroquias a las que tiene acceso.',html:`<div class="ckl" role="radiogroup">${ps.map(p=>`<label style="font-weight:400;border-bottom:1px solid var(--ln);padding:.4rem 0"><input type="radio" name="cp" value="${p.id}" ${p.id==DB.par?'checked':''}><span><b style="font-weight:600">${p.id=='curia'?'':'Parroquia '}${esc(p.nombre)}</b><br><small class="muted">${esc(p.lugar)}</small></span></label>`).join('')}</div>`,ok:'Cambiar',undo:false,onok:()=>{const v=$('#md2 input[name=cp]:checked').value;DB.par=v;save();cerrar();go(v=='curia'?'curia':'inicio');toast('Ahora trabaja en: '+parName())}})}
 document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()=='k'){e.preventDefault();if($('#app').classList.contains('on'))pal()}if(e.key=='Escape'){if($('#md2.on'))cerrarAsk();else cerrar()}});

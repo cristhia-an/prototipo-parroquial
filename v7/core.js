@@ -98,8 +98,15 @@ function seed(){
  db.exports=[{id:'ex1',nombre:'Estadística sacramental 2025.pdf',fecha:'01/10/2026 10:00',u:'Carmen Ruiz'},{id:'ex2',nombre:'Balance septiembre 2026.xlsx',fecha:'05/10/2026 12:30',u:'Rubén Salas'}];
  db.cfg={nombre:'Parroquia San José',ruc:'20512345678',dir:'Jr. Lima 100, Cercado de Lima',tel:'014260000',correo:'secretaria@sanjose.example',diocesis:'Diócesis de San Ejemplo',decanato:'Decanato I',parroco:'Pbro. Luis Alberto Torres',horario:'Lunes a viernes 9:00–13:00 y 16:00–19:00',logo:'',sello:'Circular',selloTxt:'PARROQUIA SAN JOSÉ · LIMA',firmas:[{nombre:'Pbro. Luis Alberto Torres',cargo:'Párroco',ok:1},{nombre:'Carmen Ruiz',cargo:'Secretaria parroquial',ok:0}]};
  return db}
-let DB;function load(){try{DB=JSON.parse(localStorage.pq7)}catch(e){}if(!DB||DB.v!==7){DB=seed();save()}}
-function save(){try{localStorage.pq7=JSON.stringify(DB)}catch(e){}}
+/* Acceso seguro: en navegación privada o con cookies bloqueadas localStorage/sessionStorage lanzan SecurityError. */
+function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function lsSet(k,v){try{localStorage.setItem(k,String(v))}catch(e){}}
+function lsDel(k){try{localStorage.removeItem(k)}catch(e){}}
+function ssGet(k){try{return sessionStorage.getItem(k)}catch(e){return null}}
+function ssSet(k,v){try{sessionStorage.setItem(k,String(v))}catch(e){}}
+function ssDel(k){try{sessionStorage.removeItem(k)}catch(e){}}
+let DB;function load(){try{DB=JSON.parse(lsGet('pq7'))}catch(e){}if(!DB||DB.v!==7){DB=seed();save()}}
+function save(){try{lsSet('pq7',JSON.stringify(DB))}catch(e){}}
 load();
 
 /* ---------- cambios, auditoría y deshacer ---------- */

@@ -63,8 +63,8 @@ if(!DB.v7){Object.assign(DB,seed7(),{v7:1});save()}
 
 /* ---------- motor de procesos paso a paso ---------- */
 const PK={};let PR=null;
-function prRec(){return DB[PK[PR.k].tbl].find(x=>x.id==PR.id)}
-function pset(k,v,rr){const r=prRec();spth(r,k,v);save();if(rr)render()}
+function prRec(){if(!PR||!PK[PR.k])return null;const t=DB[PK[PR.k].tbl];return t&&t.find(x=>x.id==PR.id)}
+function pset(k,v,rr){const r=prRec();if(!r)return;spth(r,k,v);save();if(rr)render()}
 function abrirProc(k,id,step){const d=PK[k];const t=MODS[d.mod].tabs.findIndex(x=>x[0]==d.tab);go(d.mod,t);const r=DB[d.tbl].find(x=>x.id==id);PR={k,id,step:step??Math.min(r.paso||0,d.steps.length-1),errs:{}};render()}
 function pf(k,l,o){o=o||{};const r=prRec();const v=gp(r,k)??'';const id='p_'+k.replace(/\W/g,'_');const er=PR.errs[k];const dis=o.ro||r.cerrado;
  const a=`id="${id}" ${er?`aria-invalid="true" aria-describedby="e${id}"`:''} ${dis?'disabled':''} onchange="pset('${k}',this.${o.t=='check'?'checked?1:0':'value'}${o.rr?',1':''})"`;let h;
