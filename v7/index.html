@@ -51,16 +51,16 @@
 <symbol id="send" viewBox="0 0 24 24"><path d="M4 12l16-8-6 16-2-6z"/></symbol>
 </defs></svg>
 <section id="login"></section>
-<div id="app"><aside><button class="ps" onclick="cambiarPar()" id="psb"></button><nav id="nav"></nav>
+<div id="app"><aside id="sidenav"><button class="ps" onclick="cambiarPar()" id="psb"></button><nav id="nav"></nav>
 <div class="sbu" id="sbu"></div><div class="sbf">Prototipo v7 · datos ficticios</div></aside>
 <div class="main"><header>
-<button class="btn g mb" onclick="menu()" aria-label="Abrir menú"><svg class='i'><use href='#menu'/></svg>Menú</button>
+<button class="btn g mb" id="navb" onclick="menu();syncPop()" aria-label="Abrir menú" aria-expanded="false" aria-controls="sidenav"><svg class='i'><use href='#menu'/></svg>Menú</button>
 <div class="bc" id="bc"></div>
 <button class="sk" onclick="pal()"><svg class="i"><use href="#srch"/></svg>Buscar<kbd>Ctrl K</kbd></button>
-<div class="dd" id="bellw"><button class="btn g" onclick="notifs(event)" id="bellb" aria-haspopup="true"></button><div class="ddm np" id="npn"></div></div>
-<div class="zm"><button class="btn g" onclick="this.parentNode.classList.toggle('on')" aria-label="Tamaño del texto"><svg class="i"><use href="#aa"/></svg><span id="zl">100%</span></button><div class="zmm"><p>Tamaño del texto</p><div id="zb"></div></div></div>
+<div class="dd" id="bellw"><button class="btn g" onclick="notifs(event)" id="bellb" aria-haspopup="true" aria-expanded="false" aria-controls="npn"></button><div class="ddm np" id="npn"></div></div>
+<div class="zm"><button class="btn g" onclick="this.parentNode.classList.toggle('on')" aria-label="Tamaño del texto" aria-haspopup="true" aria-expanded="false" aria-controls="zmm"><svg class="i"><use href="#aa"/></svg><span id="zl">100%</span></button><div class="zmm" id="zmm"><p>Tamaño del texto</p><div id="zb"></div></div></div>
 <button class="btn g hlp" onclick="ayuda()"><svg class="i"><use href="#help"/></svg>Ayuda</button>
-<div class="dd usr" id="um"><button class="btn g" onclick="this.parentNode.classList.toggle('on')" style="padding:.2rem .3rem" aria-haspopup="true"><span class="av" id="uav">CR</span><div style="text-align:left" id="unm"></div><svg class="i"><use href="#chev"/></svg></button><div class="ddm" id="umm"></div></div>
+<div class="dd usr" id="um"><button class="btn g" onclick="this.parentNode.classList.toggle('on')" style="padding:.2rem .3rem" aria-haspopup="true" aria-expanded="false" aria-controls="umm"><span class="av" id="uav">CR</span><div style="text-align:left" id="unm"></div><svg class="i"><use href="#chev"/></svg></button><div class="ddm" id="umm"></div></div>
 </header><main id="v"></main></div></div>
 <div id="scr" onclick="cerrar()"></div><div class="dr" id="dr" role="dialog" aria-modal="true"></div><div class="md" id="md" role="dialog" aria-modal="true"></div><div class="md" id="md2" role="alertdialog" aria-modal="true" style="z-index:34"></div><div class="pal" id="pal"></div><div id="toast" role="status" aria-live="polite"></div>
 <script src="core.js"></script><script src="mod1.js"></script><script src="mod2.js"></script><script src="mod3.js"></script><script src="mod4.js"></script><script src="mod5.js"></script><script src="mod6.js"></script>
