@@ -52,6 +52,8 @@ kbd{margin-left:auto;font:.72rem var(--sans);border:1px solid var(--ln2);border-
 /* badges */
 .bd{display:inline-flex;align-items:center;gap:.35rem;font-size:.78rem;font-weight:600;padding:.08rem .5rem;border-radius:99px;border:1px solid var(--ln2);color:var(--t2);white-space:nowrap}
 .bd:before{content:"";width:.42rem;height:.42rem;border-radius:50%;background:currentColor}
+.bd.lit{color:var(--t2)}
+.bd.lit:before{background:#fff;box-shadow:inset 0 0 0 1.5px var(--t2)}
 .bd.ok{color:var(--ok);background:var(--oks);border-color:#cbdcc7}.bd.wa{color:var(--wa);background:var(--was);border-color:#e7d9ad}.bd.ac{color:var(--ac);background:var(--acs);border-color:#e6cfd2}
 /* table */
 .fb{display:flex;gap:.5rem;align-items:center;padding:.7rem .8rem;border-bottom:1px solid var(--ln);flex-wrap:wrap}
