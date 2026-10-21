@@ -170,13 +170,15 @@ function vfield(f,v){v=String(v??'').trim();
  if((f.t=='money'||f.t=='num')&&(!/^\d+([.,]\d{1,2})?$/.test(v.replace(/\s/g,''))))return 'Escriba solo números. Ejemplo: 25 o 25,50.';
  if(f.min!=null&&num(v)<f.min)return `El valor mínimo es ${f.min}.`;
  return ''}
+const errTxt=m=>m&&typeof m=='object'?m.m:m;
+const verBtn=m=>{const id=m&&typeof m=='object'&&m.pid;return id?`<button type="button" class="btn" data-ver="${esc(id)}" onclick="verFicha('${esc(id)}')">${I('eye')}Ver ficha</button>`:''};
 function inp(f,v,errs){const id='f_'+f.k,er=errs&&errs[f.k],a=`id="${id}" name="${f.k}" ${er?'aria-invalid="true" aria-describedby="e_'+f.k+'"':''} ${f.ro?'readonly':''}`;let h;
  if(f.t=='sel'||f.t=='ref'){const o=f.t=='ref'?DB[f.ref].filter(f.fil||(()=>1)).map(x=>[x.id,f.lab?f.lab(x):x.nombre]):(typeof f.o=='function'?f.o():f.o).map(x=>[x,x]);h=`<select ${a}><option value="">Elija…</option>${o.map(x=>`<option value="${esc(x[0])}" ${x[0]==v?'selected':''}>${esc(x[1])}</option>`).join('')}</select>`}
  else if(f.t=='area')h=`<textarea ${a}>${esc(v)}</textarea>`;
  else if(f.t=='check')h=`<label style="display:flex;gap:.5rem;align-items:center;min-height:2.6rem;font-weight:400"><input type="checkbox" ${a} ${v?'checked':''}>${f.cl||'Sí'}</label>`;
  else if(f.t=='checks')h=`<div class="ckl" ${a}>${(typeof f.o=='function'?f.o():f.o).map(o=>`<label style="font-weight:400"><input type="checkbox" name="${f.k}" value="${esc(o)}" ${(v||[]).includes(o)?'checked':''}>${esc(o)}</label>`).join('')}</div>`;
  else h=`<input ${a} value="${esc(v)}" ${f.t=='date'?'placeholder="dd/mm/aaaa" inputmode="numeric"':f.t=='time'?'placeholder="hh:mm" inputmode="numeric"':f.t=='dni'||f.t=='tel'||f.t=='money'||f.t=='num'?'inputmode="decimal"':f.t=='email'?'type="email"':''} autocomplete="off">`;
- return `<div class="fld ${f.w?'w2':''}">${f.t=='checks'||f.t=='check'?'<span>':`<label class="fl" for="${id}">`}${f.l}${f.req?' <span class="req">(obligatorio)</span>':''}${f.t=='checks'||f.t=='check'?'</span>':'</label>'}${h}${f.help?`<div class="fh">${f.help}</div>`:''}${er?`<div class="fe" id="e_${f.k}" role="alert">${I('warn')}${esc(er)}</div>`:''}</div>`}
+ return `<div class="fld ${f.w?'w2':''}">${f.t=='checks'||f.t=='check'?'<span>':`<label class="fl" for="${id}">`}${f.l}${f.req?' <span class="req">(obligatorio)</span>':''}${f.t=='checks'||f.t=='check'?'</span>':'</label>'}${h}${f.help?`<div class="fh">${f.help}</div>`:''}${er?`<div class="fe" id="e_${f.k}" role="alert">${I('warn')}<span class="fem">${esc(errTxt(er))}</span>${verBtn(er)}</div>`:''}</div>`}
 function readF(fs){const o={};fs.forEach(f=>{const el=$('#f_'+f.k);if(f.t=='check')o[f.k]=el&&el.checked?1:0;else if(f.t=='checks')o[f.k]=$$(`input[name="${f.k}"]:checked`).map(x=>x.value);else o[f.k]=el?el.value.trim():''});return o}
 let FS=null;
 function abrirForm(ent,id,preset,step){const e=E[ent];const r=id?rec(ent,id):null;
@@ -184,7 +186,7 @@ function abrirForm(ent,id,preset,step){const e=E[ent];const r=id?rec(ent,id):nul
  const fs=e.f(FS.vals).filter(f=>!f.view);const steps=e.steps&&!id?e.steps:null;
  const cur=steps?fs.filter(f=>f.step==FS.step):fs;
  const ne=Object.keys(FS.errs).length;
- const body=`${ne?`<div class="esum" role="alert" tabindex="-1" id="esum"><b>${ne==1?'Hay 1 dato por revisar':'Hay '+ne+' datos por revisar'}</b><ul>${Object.entries(FS.errs).map(([k,m])=>`<li><a href="#f_${k}" onclick="event.preventDefault();$('#f_${k}').focus()">${esc((fs.find(f=>f.k==k)||{l:k}).l)}</a>: ${esc(m)}</li>`).join('')}</ul></div>`:''}
+ const body=`${ne?`<div class="esum" role="alert" tabindex="-1" id="esum"><b>${ne==1?'Hay 1 dato por revisar':'Hay '+ne+' datos por revisar'}</b><ul>${Object.entries(FS.errs).map(([k,m])=>`<li><a href="#f_${k}" onclick="event.preventDefault();$('#f_${k}').focus()">${esc((fs.find(f=>f.k==k)||{l:k}).l)}</a>: ${esc(errTxt(m))}${verBtn(m)}</li>`).join('')}</ul></div>`:''}
  ${e.formInfo?e.formInfo(FS.vals,!!id):''}${id&&e.motivoEdit?`<div class="info">${I('warn')}<span>Esta acta ya está inscrita. Los cambios se registran como <b>rectificación</b> y quedan como nota marginal.</span></div>`:''}
  ${steps&&FS.step==steps.length?`<h3 style="font:400 1.2rem var(--serif);margin:0 0 .6rem">Revise antes de guardar</h3><dl>${fs.filter(f=>!f.hide).map(f=>`<dt>${f.l}</dt><dd>${fv(f,FS.vals[f.k])||'<span class="muted">—</span>'}</dd>`).join('')}</dl>`:`<div class="fg">${cur.map(f=>inp(f,FS.vals[f.k],FS.errs)).join('')}${id&&e.motivoEdit?inp({k:'_motivo',l:'Motivo de la rectificación',req:1,t:'area',w:1},FS.vals._motivo,FS.errs):''}</div>`}`;
  const title=(id?(e.editT||'Editar '+e.s):(e.newT?e.newT(FS.vals):e.nuevo||'Nuevo '+e.s));
