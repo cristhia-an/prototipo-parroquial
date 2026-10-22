@@ -255,5 +255,5 @@ const _nav=nav;nav=function(){_nav();const n=DB.nmarg.filter(r=>r.dir=='Recibida
 
 /* ===== arranque ===== */
 document.body.classList.toggle('cmp',DB.prefs.dens=='Compacta');
-zoom(+(lsGet('zoom7'))||100);
+zoom(zoomLvl(lsGet('zoom7')));
 if(ssGet('in7'))entrar();else renderLogin();
